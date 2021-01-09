@@ -55,6 +55,7 @@ static int main_help(int argc, char **argv);
 
 shell_command_t commands[] = {
   {"cd", main_cd, 0},
+  {"cp", main_cp, 1},
   {"env", main_env, 0},
   {"exit", main_exit, 0},
   {"help", main_help, 1},

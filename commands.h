@@ -17,6 +17,7 @@ along with this program; see the file COPYING. If not, see
 #pragma once
 
 int main_cd(int argc, char **argv);
+int main_cp(int argc, char **argv);
 int main_env(int argc, char **argv);
 int main_exit(int argc, char **argv);
 int main_id(int argc, char **argv);
