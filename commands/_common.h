@@ -14,46 +14,12 @@ You should have received a copy of the GNU General Public License
 along with this program; see the file COPYING. If not, see
 <http://www.gnu.org/licenses/>.  */
 
-#include <errno.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
-#include <limits.h>
+#pragma once
 
-#include "_common.h"
+#include <stdint.h>
 
+void hexdump(void *data, size_t size);
 
-/**
- * 
- **/
-int
-main_cd(int argc, char **argv) {
-  char *old = strdup(getenv("PWD"));
-  char *new = NULL;
-  
-  if(argc <= 1) {
-    new = getenv("HOME");
-    
-  } else if (!strcmp(argv[1], "-")) {
-    new = getenv("OLDPWD");
-    
-  } else {
-    new = argv[1];
-  }
-
-  if(!new[0]) {
-    new = "/";
-  }
-
-  new = abspath(new);
-  
-  setenv("PWD", new, 1);
-  setenv("OLDPWD", old, 1);
-  
-  free(old);
-  free(new);
-  
-  return 0;
-}
-
+char* get_workdir(void);
+char* normpath(const char *path);
+char* abspath(const char *relpath);

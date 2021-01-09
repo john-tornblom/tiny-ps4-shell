@@ -22,6 +22,8 @@ along with this program; see the file COPYING. If not, see
 #include <stdlib.h>
 #include <limits.h>
 
+#include "_common.h"
+
 
 /**
  *
@@ -29,24 +31,20 @@ along with this program; see the file COPYING. If not, see
 int
 main_mkdir(int argc, char **argv) {
   mode_t mode = 0777;
-  char path[PATH_MAX];
-  char *pwd = getenv("PWD");
-  
+
   if(argc <= 1) {
     fprintf(stderr, "%s: missing operand\n", argv[0]);
     return -1;
   }
 
   for(int i=0; i<argc-1; i++) {
-    if(argv[i+1][0] == '/') {
-      strncpy(path, argv[i+1], sizeof(path));
-    } else {
-      snprintf(path, sizeof(path), "%s/%s", pwd, argv[i+1]);
-    }
+    char *path = abspath(argv[i+1]);
 
     if(mkdir(path, mode)) {
       perror(path);
     }
+    
+    free(path);
   }
 
   return 0;

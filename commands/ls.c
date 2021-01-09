@@ -23,6 +23,8 @@ along with this program; see the file COPYING. If not, see
 #include <sys/stat.h>
 #include <limits.h>
 
+#include "_common.h"
+
 
 /**
  *
@@ -54,37 +56,29 @@ mode_to_string(mode_t mode, char *buf) {
 }
 
 
-
-
 int
 main_ls(int argc, char **argv) {
   struct dirent **namelist;
   struct stat statbuf;
   char buf[PATH_MAX];
-  char path[PATH_MAX];
   char *p;
   int n, i;
-  char *pwd = getenv("PWD");
   
   if(argc <= 1) {
-    p = getenv("PWD");
+    p = get_workdir();
   } else {
     p = argv[1];
   }
 
-  if(p[0] == '/') {
-    strncpy(path, p, sizeof(path));
-  } else {
-    snprintf(path, sizeof(path), "%s/%s", pwd, p);
-  }
+  p = abspath(p);
     
-  if ((n = scandir(path, &namelist, NULL, alphasort)) < 0) {
+  if ((n = scandir(p, &namelist, NULL, alphasort)) < 0) {
     perror(argv[0]);
     return -1;
   }
 
   for(i=0; i<n; i++) {
-    snprintf(buf, sizeof(buf), "%s/%s", path, namelist[i]->d_name);
+    snprintf(buf, sizeof(buf), "%s/%s", p, namelist[i]->d_name);
     if(stat(buf, &statbuf) != 0) {
       perror(buf);
       continue;
@@ -97,6 +91,7 @@ main_ls(int argc, char **argv) {
   }
 
   free(namelist);
+  free(p);
   
   return 0;
 }

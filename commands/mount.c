@@ -21,6 +21,8 @@ along with this program; see the file COPYING. If not, see
 #include <sys/mount.h>
 #include <string.h>
 
+#include "_common.h"
+
 
 int
 main_mount(int argc, char **argv) {
@@ -49,11 +51,11 @@ main_mount(int argc, char **argv) {
   }
 
   if(optind < argc) {
-    device = argv[optind];
+    device = abspath(argv[optind]);
   }
 
   if(optind+1 < argc) {
-    dir = argv[optind+1];
+    dir = abspath(argv[optind+1]);
   }
 
   if(device && dir && type) {
@@ -63,6 +65,14 @@ main_mount(int argc, char **argv) {
     }
   } else {
     fprintf(stderr, "%s: missing operand\n", argv[0]);    
+  }
+
+  if(dir) {
+    free(dir);
+  }
+
+  if(device) {
+    free(device);
   }
   
   if(type) {

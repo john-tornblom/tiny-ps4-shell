@@ -21,30 +21,27 @@ along with this program; see the file COPYING. If not, see
 #include <limits.h>
 #include <stdlib.h>
 
+#include "_common.h"
+
 
 /**
  *
  **/
 int
-main_rmdir(int argc, char **argv) {
-  char path[PATH_MAX];
-  char *pwd = getenv("PWD");
-  
+main_rmdir(int argc, char **argv) {  
   if(argc <= 1) {
     fprintf(stderr, "%s: missing operand\n", argv[0]);
     return -1;
   }
 
   for(int i=0; i<argc-1; i++) {
-    if(argv[i+1][0] == '/') {
-      strncpy(path, argv[i+1], sizeof(path));
-    } else {
-      snprintf(path, sizeof(path), "%s/%s", pwd, argv[i+1]);
-    }
+    char *path = abspath(argv[i+1]);
     
     if(rmdir(path)) {
       perror(path);
     }
+
+    free(path);
   }
 
   return 0;

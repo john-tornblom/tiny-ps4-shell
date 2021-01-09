@@ -21,24 +21,15 @@ along with this program; see the file COPYING. If not, see
 #include <limits.h>
 #include <stdlib.h>
 
+#include "_common.h"
+
 
 /**
  *
  **/
 int
 main_pwd(int argc, char **argv) {
-  char buf[PATH_MAX];
-  char *cwd;
-
-  if(!(cwd = getenv("PWD"))) {
-    if(!getcwd(buf, sizeof(buf))) {
-      perror(argv[0]);
-      return -1;
-    }
-    cwd = buf;
-  }
-  
-  printf("%s\n", cwd);
+  printf("%s\n", get_workdir());
   
   return 0;
 }
