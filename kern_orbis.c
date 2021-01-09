@@ -21,6 +21,10 @@ along with this program; see the file COPYING. If not, see
 #include <errno.h>
 #include <stdint.h>
 #include <string.h>
+#include <limits.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <stdio.h>
 #include <sys/mman.h>
 
 #include "kern_orbis.h"
@@ -41,14 +45,8 @@ unsigned long long int __readmsr(unsigned long __register) {
 }
 
 
-static unsigned int
-kern_get_fw_version(void) {
-  return 0x672;
-}
-
-
 static int
-kern_get_offsets(struct kern_offset *kern) {
+kern_get_offsets(struct kern_offset *kern, unsigned int sw_ver) {
   void *base;
   unsigned char *ptr;
 
@@ -57,7 +55,7 @@ kern_get_offsets(struct kern_offset *kern) {
   kern->copyin = 0;
   kern->copyout = 0;
 
-  switch(kern_get_fw_version()) {
+  switch(sw_ver) {
   case 0x350:
     base = &((unsigned char *)__readmsr(0xC0000082))[-K350_XFAST_SYSCALL];
     ptr = (unsigned char *)base;
@@ -270,12 +268,12 @@ kern_get_offsets(struct kern_offset *kern) {
 
 
 static int
-kexec_jailbreak(struct thread *td) {
+kexec_jailbreak(struct thread *td, struct kexec_ctx *ctx) {
   struct ucred* cred = td->td_proc->p_ucred;
   struct filedesc* fd = td->td_proc->p_fd;
   struct kern_offset kern;
   
-  kern_get_offsets(&kern);
+  kern_get_offsets(&kern, ctx->sw_ver);
   if(!kern.prison0 || !kern.root_vnode) {
     return EFAULT;
   }
@@ -293,7 +291,7 @@ kexec_get_attributes(struct thread *td, struct kexec_ctx *ctx) {
   const uint64_t *attrs = (uint64_t *)(((char *)td_ucred) + 96);
   struct kern_offset kern;
 
-  kern_get_offsets(&kern);
+  kern_get_offsets(&kern, ctx->sw_ver);
   if(!kern.copyout) {
     return EFAULT;
   }
@@ -308,7 +306,7 @@ kexec_get_authid(struct thread *td, struct kexec_ctx *ctx) {
   const uint64_t *authid = (uint64_t *)(((char *)td_ucred) + 88);
   struct kern_offset kern;
 
-  kern_get_offsets(&kern);
+  kern_get_offsets(&kern, ctx->sw_ver);
   if(!kern.copyout) {
     return EFAULT;
   }
@@ -323,7 +321,7 @@ kexec_get_capabilities(struct thread *td, struct kexec_ctx *ctx) {
   const uint64_t *caps = (uint64_t *)(((char *)td_ucred) + 104);
   struct kern_offset kern;
 
-  kern_get_offsets(&kern);
+  kern_get_offsets(&kern, ctx->sw_ver);
   if(!kern.copyout) {
     return EFAULT;
   }
@@ -338,7 +336,7 @@ kexec_set_attributes(struct thread *td, struct kexec_ctx *ctx) {
   uint64_t *attrs = (uint64_t *)(((char *)td_ucred) + 96);
   struct kern_offset kern;
   
-  kern_get_offsets(&kern);
+  kern_get_offsets(&kern, ctx->sw_ver);
   if(!kern.copyin) {
     return EFAULT;
   }
@@ -353,7 +351,7 @@ kexec_set_authid(struct thread *td, struct kexec_ctx *ctx) {
   uint64_t *authid = (uint64_t *)(((char *)td_ucred) + 88);
   struct kern_offset kern;
 
-  kern_get_offsets(&kern);
+  kern_get_offsets(&kern, ctx->sw_ver);
   if(!kern.copyin) {
     return EFAULT;
   }
@@ -368,12 +366,41 @@ kexec_set_capabilities(struct thread *td, struct kexec_ctx *ctx) {
   uint64_t *caps = (uint64_t *)(((char *)td_ucred) + 104);
   struct kern_offset kern;
   
-  kern_get_offsets(&kern);
+  kern_get_offsets(&kern, ctx->sw_ver);
   if(!kern.copyin) {
     return EFAULT;
   }
   
   return kern.copyin(ctx->uaddr, caps, sizeof(uint64_t));
+}
+
+
+#define LIBC_SPRX "common/lib/libc.sprx"
+char* sceKernelGetFsSandboxRandomWord();
+
+
+static unsigned int
+libc_sw_version(void) {
+  static unsigned int ver = 0;
+  char path[PATH_MAX];
+  int fd;
+
+  // Avoid disk I/O and read value only once
+  if(ver) {
+    return ver;
+  }
+
+  snprintf(path, sizeof(path), "/%s/%s", sceKernelGetFsSandboxRandomWord(),
+	                                 LIBC_SPRX);
+  
+  if(!(fd = open(path, O_RDONLY))) {
+    return 0;
+  }
+
+  lseek(fd, 0x374, SEEK_CUR);
+  read(fd, &ver, 2);
+
+  return ver;
 }
 
 
@@ -383,8 +410,9 @@ app_get(void *fn, void *ptr, size_t len) {
   int prot = PROT_READ | PROT_WRITE;
   int flags = MAP_ANONYMOUS | MAP_PRIVATE;
   void *uaddr = mmap(0, len, prot, flags, -1, 0);
+  unsigned int sw_ver = libc_sw_version();
   
-  if(!syscall(SYS_kexec, fn, uaddr)) {
+  if(!syscall(SYS_kexec, fn, sw_ver, uaddr)) {
     memcpy(ptr, uaddr, len);
     rc = 0;
   }
@@ -401,9 +429,10 @@ app_set(void *fn, void *ptr, size_t len) {
   int prot = PROT_READ | PROT_WRITE;
   int flags = MAP_ANONYMOUS | MAP_PRIVATE;
   void *uaddr = mmap(0, len, prot, flags, -1, 0);
-
+  unsigned int sw_ver = libc_sw_version();
+  
   memcpy(uaddr, ptr, len);
-  if(!syscall(SYS_kexec, fn, uaddr)) {
+  if(!syscall(SYS_kexec, fn, sw_ver, uaddr)) {
     rc = 0;
   }
 
@@ -475,7 +504,8 @@ app_set_capabilities(uint64_t val) {
 
 int
 app_jailbreak(void) {
-  if(syscall(SYS_kexec, kexec_jailbreak)) {
+  unsigned int sw_ver = libc_sw_version();
+  if(syscall(SYS_kexec, kexec_jailbreak, sw_ver)) {
     return -1;
   }
 

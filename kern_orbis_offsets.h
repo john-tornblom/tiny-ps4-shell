@@ -192,6 +192,7 @@ along with this program; see the file COPYING. If not, see
 
 struct kexec_ctx {
   void *syscall_handler;
+  unsigned int sw_ver;
   void *uaddr;
 };
 
