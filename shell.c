@@ -247,7 +247,8 @@ shell_loop(void) {
   int running = 1;
   
   printf("\n");
-  printf("Starting a shell on pid %u\n", getpid());
+  printf("Welcome to a tiny PS4 shell, ");
+  printf("compiled %s at %s\n", __DATE__, __TIME__);
   printf("Type 'help' for a list of commands\n");
   printf("\n");
 

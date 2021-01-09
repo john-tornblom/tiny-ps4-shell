@@ -101,7 +101,7 @@ static pid_t pgid = 0;
 
 
 /**
- * OrbisOS sends a STOP signal (17) the the parent process when the user stops
+ * OrbisOS sends a STOP signal (17) to the parent process when the user stops
  * an application. Upon such events, politely ask child processes to terminate
  * by signaling TERM (15) to the entire process group.
  **/
