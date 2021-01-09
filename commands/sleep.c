@@ -14,20 +14,25 @@ You should have received a copy of the GNU General Public License
 along with this program; see the file COPYING. If not, see
 <http://www.gnu.org/licenses/>.  */
 
-#pragma once
+#include <stdlib.h>
+#include <stdio.h>
+#include <unistd.h>
 
-int main_cd(int argc, char **argv);
-int main_env(int argc, char **argv);
-int main_exit(int argc, char **argv);
-int main_id(int argc, char **argv);
-int main_jailbreak(int argc, char **argv);
-int main_kill(int argc, char **argv);
-int main_ls(int argc, char **argv);
-int main_mkdir(int argc, char **argv);
-int main_mount(int argc, char **argv);
-int main_pwd(int argc, char **argv);
-int main_rmdir(int argc, char **argv);
-int main_sleep(int argc, char **argv);
-int main_stat(int argc, char **argv);
-int main_uname(int argc, char **argv);
+/**
+ * 
+ **/
+int
+main_sleep(int argc, char **argv) {
+
+  if(argc <= 1) {
+    fprintf(stderr, "%s: missing operand\n", argv[0]);
+    return -1;
+  }
+
+  unsigned int seconds = atoi(argv[1]);
+  sleep(seconds);
+    
+  return 0;
+}
+
 
