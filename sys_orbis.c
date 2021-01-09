@@ -19,6 +19,7 @@ along with this program; see the file COPYING. If not, see
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <sys/wait.h>
 #include <orbis/SysUtil.h>
 
 #include "kern_orbis.h"
@@ -56,6 +57,19 @@ sys_fork(void) {
   return pid;
 }
 
+
+pid_t
+sys_waitpid(pid_t pid, int *wstatus, int options) {
+  uint64_t attrs = app_get_attributes();
+
+  app_set_attributes(attrs | (1ULL << 62));
+
+  pid = waitpid(pid, wstatus, options);
+  
+  app_set_attributes(attrs);
+  
+  return pid;
+}
 
 /**
  * The dup2() function needs aditional application capabilities.

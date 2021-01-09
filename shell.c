@@ -197,7 +197,7 @@ shell_fork(main_t *main, int argc, char **argv) {
   } else {
     int status = 0;
     do {
-      waitpid(pid, &status, WUNTRACED);
+      sys_waitpid(pid, &status, WUNTRACED);
     } while (!WIFEXITED(status) && !WIFSIGNALED(status));
 
     return WEXITSTATUS(status);
