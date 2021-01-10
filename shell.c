@@ -68,6 +68,7 @@ shell_command_t commands[] = {
   {"mount", main_mount, 1},
   {"pwd", main_pwd, 1},
   {"rmdir", main_rmdir, 1},
+  {"seteuid", main_seteuid, 0},
   {"sleep", main_sleep, 1},
   {"stat", main_stat, 1},
   {"uname", main_uname, 1},
