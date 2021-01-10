@@ -77,14 +77,85 @@ get_workdir(void) {
 }
 
 
+#define ispathsep(ch)   ((ch) == '/' || (ch) == '\\')
+#define iseos(ch)       ((ch) == '\0')
+#define ispathend(ch)   (ispathsep(ch) || iseos(ch))
+
 
 /**
- * Normalize path by eliminating double slashes.
+ * Normalize a path.
+ *
+ * Inspired by https://gist.github.com/starwing/2761647
  **/
-char*
-normpath(const char *path) {
-  //TODO
-  return strdup(path);
+char *normpath(const char *in, char *buf, size_t bufsize) {
+  char *pos[PATH_MAX];
+  char **top = pos;
+  char *head = buf;
+  int isabs = ispathsep(*in);
+
+  if(isabs && bufsize) {
+    *buf++ = '/';
+    bufsize--;
+  }
+  
+  *top++ = buf;
+
+  while(!iseos(*in)) {
+    while(ispathsep(*in)) {
+      ++in;
+    }
+    
+    if(iseos(*in)) {
+      break;
+    }
+    
+    if(memcmp(in, ".", 1) == 0 && ispathend(in[1])) {
+      ++in;
+      continue;
+    }
+
+    if(memcmp(in, "..", 2) == 0 && ispathend(in[2])) {
+      in += 2;
+      
+      if(top != pos + 1) {
+	buf = *--top;
+	
+      } else if(isabs) {
+	buf = top[-1];
+	
+      } else {
+	strncpy(buf, "../", bufsize);
+	buf += 3;
+	bufsize -= 3;
+      }
+      
+      continue;
+    }
+
+    if(top - pos >= PATH_MAX) {
+      return NULL;
+    }
+    
+    *top++ = buf;
+    
+    while(!ispathend(*in) && bufsize) {
+      *buf++ = *in++;
+      bufsize--;
+    }
+    
+    if(ispathsep(*in) && bufsize) {
+      *buf++ = '/';
+      bufsize--;
+    }
+  }
+
+  *buf = '\0';
+  
+  if(*head == '\0') {
+    strcpy(head, "./");
+  }
+  
+  return head;
 }
 
 
@@ -93,14 +164,15 @@ normpath(const char *path) {
  **/
 char *
 abspath(const char *relpath) {
-  char ap[PATH_MAX];
+  char buf[PATH_MAX];
   
   if(relpath[0] == '/') {
-    return strdup(relpath);
+    strncpy(buf, relpath, sizeof(buf));
+  } else {
+    snprintf(buf, sizeof(buf), "%s/%s", get_workdir(), relpath);
   }
-
-  snprintf(ap, sizeof(ap), "%s/%s", get_workdir(), relpath);
-
-  return normpath(ap);
+  
+  char *ap = malloc(PATH_MAX);
+  return normpath(buf, ap, PATH_MAX);
 }
 
