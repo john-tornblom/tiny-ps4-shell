@@ -18,8 +18,20 @@ john@localhost:tiny-ps4-shell$ ./main_term.bin
 ```
 
 ## Usage
-Install the compiled pkg on a jailbroken PS4, launch the application, and telnet
-to the PS4 (port 2323).
+Install the compiled pkg on a PS4 with homebrew and the kexec syscall enabled,
+launch the application, and telnet to the PS4 (port 2323).
+
+To escape the initial jailed sandbox:
+```console
+/$ jailbreak
+```
+
+To obtain root permissions:
+```console
+/$ seteuid 0
+```
+There are a handful of rudimentary commands available, e.g., cd, ls, and mkdir.
+Type `help` in a connected telnet shell for more information.
 
 ## Reporting Bugs
 If you encounter problems with tiny-ps4-shell, please [file a github issue][issues].
