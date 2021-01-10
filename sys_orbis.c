@@ -14,9 +14,11 @@ You should have received a copy of the GNU General Public License
 along with this program; see the file COPYING. If not, see
 <http://www.gnu.org/licenses/>.  */
 
+#include <errno.h>
 #include <signal.h>
 #include <stdarg.h>
 #include <stdio.h>
+#include <string.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <sys/wait.h>
@@ -117,11 +119,21 @@ static void on_SIGSTOP(int sig) {
 
 
 /**
- * Obtain our process group id so we can signal TERM to child processes when
- * OrbisOS sends STOP.
+ * Create a new session so we are not attached to PS4 system services.
+ * This ensures kill -1 does not terminate vital services wehn acting as uid0.
+ * Also, obtain our process group id so we can signal TERM to child processes
+ * when OrbisOS sends STOP.
  **/
 void
 sys_init(void) {
+  uint64_t attrs = app_get_attributes();
+  
+  app_set_attributes(attrs | (1ULL << 62));
+  if(setsid() < 0) {
+    sys_notify("setsid: %s", strerror(errno));
+  }
+  app_set_attributes(attrs);
+  
   pgid = getpgrp();
   signal(17, on_SIGSTOP);
 }
