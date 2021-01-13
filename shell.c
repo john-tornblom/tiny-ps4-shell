@@ -69,6 +69,7 @@ shell_command_t commands[] = {
   {"pwd", main_pwd, 1},
   {"rmdir", main_rmdir, 1},
   {"seteuid", main_seteuid, 0},
+  {"sfoinfo", main_sfoinfo, 1},
   {"sleep", main_sleep, 1},
   {"stat", main_stat, 1},
   {"uname", main_uname, 1},
