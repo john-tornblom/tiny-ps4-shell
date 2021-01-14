@@ -18,8 +18,6 @@ along with this program; see the file COPYING. If not, see
 
 #include <stdint.h>
 
-void hexdump(void *data, size_t size);
-
 char* get_workdir(void);
 char* normpath(const char *path);
 char* abspath(const char *relpath);

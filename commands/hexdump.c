@@ -21,6 +21,8 @@ along with this program; see the file COPYING. If not, see
 #include <stdint.h>
 #include <string.h>
 
+#include "_common.h"
+
 
 static void
 hexdump(void *data, size_t size) {
@@ -76,7 +78,11 @@ int main_hexdump(int argc, char **argv) {
     return -1;
   }
 
-  if(!(fp = fopen(argv[1], "rb"))) {
+  char *path = abspath(argv[1]);
+  fp = fopen(path, "rb");
+  free(path);
+  
+  if(!fp) {
     perror(argv[1]);
     return -1;
   }
@@ -102,7 +108,7 @@ int main_hexdump(int argc, char **argv) {
     perror(argv[1]);
     return -1;
   }
-  
+
   hexdump(buf, size);
   free(buf);
 

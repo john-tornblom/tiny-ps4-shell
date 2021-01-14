@@ -63,6 +63,7 @@ shell_command_t commands[] = {
   {"env", main_env, 0},
   {"exit", main_exit, 0},
   {"help", main_help, 1},
+  {"hexdump", main_hexdump, 1},
   {"id", main_id, 1},
   {"jailbreak", main_jailbreak, 0},
   {"kill", main_kill, 1},
