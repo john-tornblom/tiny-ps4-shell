@@ -60,6 +60,9 @@ sys_fork(void) {
 }
 
 
+/**
+ * The waitpid syscall needs additional application attributes.
+ **/
 pid_t
 sys_waitpid(pid_t pid, int *wstatus, int options) {
   uint64_t attrs = app_get_attributes();
@@ -91,7 +94,7 @@ int sys_dup(int oldfd) {
 
 
 /**
- * The dup2() function needs aditional application capabilities.
+ * The dup2 syscall needs aditional application capabilities.
  **/
 int
 sys_dup2(int oldfd, int newfd) {
