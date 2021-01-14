@@ -282,28 +282,28 @@ shell_loop(void) {
       continue;
     }
 
-    infd = dup(0);
-    outfd = dup(1);
+    infd = sys_dup(0);
+    outfd = sys_dup(1);
     
     for(int i=0; cmds[i]; i++) {
       if(!(args = shell_splitstring(cmds[i], SHELL_ARG_DELIM))) {
 	continue;
       }
       
-      if(cmds[i+1] && !pipe(pipefd)) {
-	dup2(pipefd[1], 1);
+      if(cmds[i+1] && !sys_pipe(pipefd)) {
+	sys_dup2(pipefd[1], 1);
 	close(pipefd[1]);
       } else {
-	dup2(outfd, 1);
+	sys_dup2(outfd, 1);
       }
       
       exit_code = shell_execute(args);
 
       if(cmds[i+1]) {
-	dup2(pipefd[0], 0);
+	sys_dup2(pipefd[0], 0);
 	close(pipefd[0]);
       } else {
-	dup2(infd, 0);
+	sys_dup2(infd, 0);
       }
 
       fflush(NULL);

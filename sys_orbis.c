@@ -73,6 +73,23 @@ sys_waitpid(pid_t pid, int *wstatus, int options) {
   return pid;
 }
 
+
+/**
+ * The dup syscall needs aditional application capabilities.
+ **/
+int sys_dup(int oldfd) {
+  uint64_t caps = app_get_capabilities();
+  
+  app_set_capabilities(caps | (1ULL << 62));
+  
+  int res = dup(oldfd);
+
+  app_set_capabilities(caps);
+  
+  return res;
+}
+
+
 /**
  * The dup2() function needs aditional application capabilities.
  **/
@@ -83,6 +100,23 @@ sys_dup2(int oldfd, int newfd) {
   app_set_capabilities(caps | (1ULL << 62));
   
   int res = dup2(oldfd, newfd);
+
+  app_set_capabilities(caps);
+  
+  return res;
+}
+
+
+/**
+ * The pipe syscall needs aditional application capabilities.
+ **/
+int
+sys_pipe(int pipefd[2]) {
+  uint64_t caps = app_get_capabilities();
+  
+  app_set_capabilities(caps | (1ULL << 62));
+  
+  int res = pipe(pipefd);
 
   app_set_capabilities(caps);
   
