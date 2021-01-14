@@ -34,8 +34,6 @@ along with this program; see the file COPYING. If not, see
 
 #define SYS_kexec 11
 
-long int syscall(long int num, ...);
-
 
 unsigned long long int __readmsr(unsigned long __register) {
   unsigned long __edx;
@@ -375,7 +373,6 @@ kexec_set_capabilities(struct thread *td, struct kexec_ctx *ctx) {
 }
 
 
-#define LIBC_SPRX "common/lib/libc.sprx"
 char* sceKernelGetFsSandboxRandomWord();
 
 
@@ -391,7 +388,7 @@ libc_sw_version(void) {
   }
 
   snprintf(path, sizeof(path), "/%s/%s", sceKernelGetFsSandboxRandomWord(),
-	                                 LIBC_SPRX);
+                                         "common/lib/libc.sprx");
   
   if(!(fd = open(path, O_RDONLY))) {
     return 0;
