@@ -157,7 +157,7 @@ static void on_SIGSTOP(int sig) {
 
 /**
  * Create a new session so we are not attached to PS4 system services.
- * This ensures kill -1 does not terminate vital services wehn acting as uid0.
+ * This ensures kill -1 does not terminate vital services when acting as uid 0.
  * Also, obtain our process group id so we can signal TERM to child processes
  * when OrbisOS sends STOP.
  **/
