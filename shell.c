@@ -36,7 +36,7 @@ along with this program; see the file COPYING. If not, see
 
 
 /**
- * Callback function for main function of commands
+ * Callback function for main function of commands.
  **/
 typedef int (main_t)(int argc, char **argv);
 
@@ -85,7 +85,7 @@ shell_command_t commands[] = {
 
 
 /**
- * Read a line from stdin
+ * Read a line from stdin.
  **/
 static char*
 shell_readline(void) {
@@ -134,7 +134,7 @@ shell_readline(void) {
 
 /**
  * Split a string into an array of substrings seperated by 
- * a delimiter
+ * a delimiter.
  **/
 static char**
 shell_splitstring(char *line, char *delim) {
@@ -172,7 +172,7 @@ shell_splitstring(char *line, char *delim) {
 
 
 /**
- * Print the shell prompt to stdout
+ * Print the shell prompt to stdout.
  **/
 static void
 shell_prompt(void) {
@@ -188,7 +188,7 @@ shell_prompt(void) {
 
 
 /**
- * Fork the execution of a command
+ * Fork the execution of a command.
  **/
 static int
 shell_fork(main_t *main, int argc, char **argv) {
@@ -214,7 +214,7 @@ shell_fork(main_t *main, int argc, char **argv) {
 
 
 /**
- * Execute a shell command
+ * Execute a shell command.
  **/
 static int
 shell_execute(char **argv) {
@@ -247,7 +247,7 @@ shell_execute(char **argv) {
 
 
 /**
- * Shell entry point
+ * Shell entry point.
  **/
 void
 shell_loop(void) {
@@ -320,7 +320,7 @@ shell_loop(void) {
 
 
 /**
- * Display a list of registered commands
+ * Print a list of available commands to stdout.
  **/
 static int
 main_help(int argc, char **argv) {

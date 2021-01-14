@@ -19,7 +19,7 @@ along with this program; see the file COPYING. If not, see
 
 
 /**
- * Print a notification to stdout
+ * Print a notification to stdout.
  **/
 void
 sys_notify(const char *fmt, ...) {
