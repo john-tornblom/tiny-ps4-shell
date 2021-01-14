@@ -396,7 +396,8 @@ libc_sw_version(void) {
 
   lseek(fd, 0x374, SEEK_CUR);
   read(fd, &ver, 2);
-
+  close(fd);
+  
   return ver;
 }
 
