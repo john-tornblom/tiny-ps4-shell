@@ -15,6 +15,9 @@ along with this program; see the file COPYING. If not, see
 <http://www.gnu.org/licenses/>.  */
 
 #include <stdio.h>
+#include <stdlib.h>
+
+#include "_common.h"
 
 
 void cat(FILE *fp) {
@@ -30,16 +33,17 @@ void cat(FILE *fp) {
  **/
 int
 main_cat(int argc, char **argv) {
-
-  
   for(int i=1; i<argc; i++) {
     FILE *fp;
-
-    if(!(fp = fopen(argv[i], "r"))) {
+    char *path = abspath(argv[i]);
+    
+    if(!(fp = fopen(path, "r"))) {
       perror(argv[i]);
     } else {
       cat(fp);
     }
+    
+    free(path);
   }
 
   if(argc <= 1) {
