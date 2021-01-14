@@ -134,7 +134,7 @@ shell_readline(void) {
 
 /**
  * Split a string into an array of substrings seperated by 
- * SHELL_TOK_DELIM
+ * a delimiter
  **/
 static char**
 shell_splitstring(char *line, char *delim) {
