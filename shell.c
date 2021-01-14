@@ -31,7 +31,8 @@ along with this program; see the file COPYING. If not, see
 
 #define SHELL_LINE_BUFSIZE 1024
 #define SHELL_TOK_BUFSIZE  128
-#define SHELL_TOK_DELIM    " \t\r\n\a"
+#define SHELL_ARG_DELIM    " \t\r\n\a"
+#define SHELL_CMD_DELIM    "|;&"
 
 
 /**
@@ -133,7 +134,7 @@ shell_readline(void) {
  * SHELL_TOK_DELIM
  **/
 static char**
-shell_splitline(char *line) {
+shell_splitstring(char *line, char *delim) {
   int bufsize = SHELL_TOK_BUFSIZE;
   int position = 0;
   char **tokens = malloc(bufsize * sizeof(char*));
@@ -144,7 +145,7 @@ shell_splitline(char *line) {
     return NULL;
   }
 
-  token = strtok(line, SHELL_TOK_DELIM);
+  token = strtok(line, delim);
   while(token != NULL) {
     tokens[position] = token;
     position++;
@@ -160,7 +161,7 @@ shell_splitline(char *line) {
       }
     }
     
-    token = strtok(NULL, SHELL_TOK_DELIM);
+    token = strtok(NULL, delim);
   }
   tokens[position] = NULL;
   return tokens;
@@ -247,8 +248,15 @@ shell_execute(char **argv) {
  **/
 void
 shell_loop(void) {
+  char *line = NULL;
+  char **cmds = NULL;
+  char **args = NULL;
+  int pipefd[2] = {0, 0};
+  int exit_code = 0;
   char **history = NULL;
   int running = 1;
+  int infd = 0;
+  int outfd = 1;
   
   printf("\n");
   printf("Welcome to a tiny PS4 shell running on pid %d, ", getpid());
@@ -261,31 +269,49 @@ shell_loop(void) {
   
 
   while(running) {
-    char *line = NULL;
-    char **args = NULL;
-    int exit_code = 0;
-    
     shell_prompt();
 
     setvbuf(stdout, NULL, _IONBF, 0);
     line = shell_readline();
     setvbuf(stdout, NULL, _IOLBF, 0);
-    
-    if(line) {
-      args = shell_splitline(line);
-    }
-    if(args) {
-      exit_code = shell_execute(args);
+
+    if(!(cmds = shell_splitstring(line, SHELL_CMD_DELIM))) {
+      free(line);
+      continue;
     }
 
-    fflush(NULL);
+    infd = dup(0);
+    outfd = dup(1);
     
-    if(line) {
-      free(line);
-    }
-    if(args) {
+    for(int i=0; cmds[i]; i++) {
+      if(!(args = shell_splitstring(cmds[i], SHELL_ARG_DELIM))) {
+	continue;
+      }
+      
+      if(cmds[i+1] && !pipe(pipefd)) {
+	dup2(pipefd[1], 1);
+	close(pipefd[1]);
+      } else {
+	dup2(outfd, 1);
+      }
+      
+      exit_code = shell_execute(args);
+
+      if(cmds[i+1]) {
+	dup2(pipefd[0], 0);
+	close(pipefd[0]);
+      } else {
+	dup2(infd, 0);
+      }
+
+      fflush(NULL);
       free(args);
     }
+    free(line);
+    free(cmds);
+
+    close(infd);
+    close(outfd);
   }
 }
 
