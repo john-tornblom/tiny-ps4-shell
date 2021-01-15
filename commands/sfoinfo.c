@@ -22,114 +22,133 @@ along with this program; see the file COPYING. If not, see
 #include <stdint.h>
 #include <string.h>
 
-
-typedef struct sfo_header {
-  uint32_t magic;
-  uint32_t version;
-  uint32_t keys_offset;
-  uint32_t data_offset;
-  uint32_t count;
-} __attribute__((packed)) sfo_header_t;
+#include "sfo.h"
+#include "_common.h"
 
 
-typedef struct sfo_entry {
-  uint16_t key_offset;
-  uint8_t  alignment;
-  uint8_t  type;
-  uint32_t val_size;
-  uint32_t tot_size;
-  uint32_t val_offset;
-} __attribute__((packed)) sfo_entry_t;
+static char*
+freadstr(FILE *fp) {
+  int size = 64;
+  int pos = 0;
+  char *tmp;
+  char *buf;
+  char c;
 
+  if(!(buf = calloc(size, sizeof(char)))) {
+    fprintf(stderr, "malloc: %s\n", strerror(errno));
+    return NULL;
+  }
 
-#define SFO_MAGIC 0x46535000
-
-#define PSF_TYPE_BIN 0
-#define PSF_TYPE_STR 2
-#define PSF_TYPE_INT 4
+  while(1) {
+    if((c = fgetc(fp)) <= 0) {
+      buf[pos] = '\0';
+      return buf;
+    }
+  
+    buf[pos++] = c;
+    if(pos >= size) {
+      size *= 2;
+      tmp = buf;
+      if(!(buf = realloc(buf, size))) {
+	fprintf(stderr, "realloc: %s\n", strerror(errno));
+	free(tmp);
+	return NULL;
+      }
+    }
+  }
+}
 
 
 static int
-sfoinfo_dump(const char *filename) {
+sfoinfo(FILE *fp) {
   sfo_header_t header;
-  FILE *fp;
-  
-  if(!(fp = fopen(filename, "rb"))) {
-    perror(filename);
-    return -1;
-  }
 
   if(fread(&header, sizeof(sfo_header_t), 1, fp) < 1) {
-    fprintf(stderr, "%s: Unexpected end of file\n", filename);
     return -1;
   }
 
-  if(header.magic != SFO_MAGIC) {
-    fprintf(stderr, "%s: Unexpected magic number\n", filename);
+  if(header.magic != MAGIC) {
     return -1;
+  }
+
+  if(!header.count) {
+    return 0;
   }
 
   sfo_entry_t entries[header.count];
   if(fread(&entries, sizeof(sfo_entry_t), header.count, fp) < 1) {
-    fprintf(stderr, "%s: Unexpected end of file\n", filename);
     return -1;
   }
     
   for(int i=0; i<header.count; i++) {
     sfo_entry_t *e = &entries[i];
-    uint8_t val[e->tot_size];
-    char key[64];
-
+    uint8_t val[e->val_size+1];
+    char *key;
+    
     if(fseek(fp, header.keys_offset + e->key_offset, SEEK_SET)) {
-      perror(filename);
       return -1;
     }
-    
-    if(fread(key, sizeof(char), 64, fp) != 64) {
-      fprintf(stderr, "%s: Unexpected end of file\n", filename);
+
+    if(!(key = freadstr(fp))) {
       return -1;      
     }
     
     if(fseek(fp, header.data_offset + e->val_offset, SEEK_SET)) {
-      perror(filename);
+      free(key);
       return -1;
     }
-    
-    if(fread(val, sizeof(uint8_t), e->tot_size, fp) != e->tot_size) {
-      fprintf(stderr, "%s: Unexpected end of file\n", filename);
+
+    memset(val, 0, sizeof(val));
+    if(fread(val, sizeof(uint8_t), e->val_size, fp) != e->val_size) {
+      free(key);
       return -1;      
     }
 
     printf("%s(", key);
     switch(e->type) {
-    case PSF_TYPE_INT:
+    case TYPE_INT:
       printf("0x%02x%02x%02x%02x", val[3], val[2], val[1], val[0]);
       break;
       
-    case PSF_TYPE_STR:
+    case TYPE_STR:
       printf("'%s'", val);
       break;
       
     default:
-      printf("0x");
-      for(int i=0; i<e->tot_size; i++) {
+      printf("%d, 0x", e->type);
+      for(int i=0; i<e->val_length; i++) {
 	printf("%02x", val[i]);
       }
       break;
     }
     printf(")\n");
+
+    free(key);
   }
 
   return 0;
 }
 
 
-int main_sfoinfo(int argc, char **argv) {
+int
+main_sfoinfo(int argc, char **argv) {
+  FILE *fp;
 
   if(argc <= 1) {
-    fprintf(stderr, "%s: missing operand\n", argv[0]);
+    fprintf(stderr, "usage: %s param.sfo\n", argv[0]);
     return -1;
   }
 
-  return sfoinfo_dump(argv[1]);
+  for(int i=1; i<argc; i++) {
+    char *path = abspath(argv[i]);
+    if(!(fp = fopen(argv[i], "rb"))) {
+      perror(argv[i]);
+    } else {
+      sfoinfo(fp);
+    }
+    free(path);
+  }
+
+  return 0;
 }
+

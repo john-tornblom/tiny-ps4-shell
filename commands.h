@@ -34,6 +34,7 @@ int main_pwd(int argc, char **argv);
 int main_rmdir(int argc, char **argv);
 int main_seteuid(int argc, char **argv);
 int main_sfoinfo(int argc, char **argv);
+int main_sfocreate(int argc, char **argv);
 int main_sleep(int argc, char **argv);
 int main_stat(int argc, char **argv);
 int main_uname(int argc, char **argv);
