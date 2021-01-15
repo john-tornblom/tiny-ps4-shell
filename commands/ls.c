@@ -39,9 +39,9 @@ mode_to_string(mode_t mode, char *buf) {
     bit = mode & (1<<i);
     c = i%3;
     if (!c && (mode & (1<<((d=i/3)+9)))) {
-      c = "tss"[d];
+      c = "tss"[(int)d];
       if (!bit) c &= ~0x20;
-    } else c = bit ? "xwr"[c] : '-';
+    } else c = bit ? "xwr"[(int)c] : '-';
     buf[9-i] = c;
   }
 

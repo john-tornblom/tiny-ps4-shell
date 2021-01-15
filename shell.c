@@ -218,7 +218,6 @@ shell_fork(main_t *main, int argc, char **argv) {
  **/
 static int
 shell_execute(char **argv) {
-  shell_command_t *cmd = commands;
   int argc = 0;
 
   while(argv[argc]) {
