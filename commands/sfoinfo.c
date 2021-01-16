@@ -141,7 +141,7 @@ main_sfoinfo(int argc, char **argv) {
 
   for(int i=1; i<argc; i++) {
     char *path = abspath(argv[i]);
-    if(!(fp = fopen(argv[i], "rb"))) {
+    if(!(fp = fopen(path, "rb"))) {
       perror(argv[i]);
     } else {
       sfoinfo(fp);
