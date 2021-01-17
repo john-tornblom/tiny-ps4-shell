@@ -30,6 +30,19 @@ To obtain root permissions:
 ```console
 /$ seteuid 0
 ```
+
+To mount procfs and get list of processes:
+```console
+/$ seteuid 0
+/$ mkdir proc
+/$ mount -t procfs proc /proc
+/$ ps
+     PID      PPID     PGID      SID    TTY    COMMAND
+       0         0        0        0      -    kernel
+       1         0        1        1  ttyu0    mini-syscore.elf
+...
+```
+
 There are a handful of rudimentary commands available, e.g., cd, ls, and mkdir.
 Type `help` in a connected telnet shell for more information.
 
