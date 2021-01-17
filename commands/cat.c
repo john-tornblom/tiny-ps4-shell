@@ -20,7 +20,8 @@ along with this program; see the file COPYING. If not, see
 #include "_common.h"
 
 
-void cat(FILE *fp) {
+static void
+cat(FILE *fp) {
   int c;
   while((c = getc(fp)) > 0) {
     putc(c, stdout);
