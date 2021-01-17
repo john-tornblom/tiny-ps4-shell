@@ -154,7 +154,7 @@ main_mount(int argc, char **argv) {
       break;
       
     default:
-      printf("usage: %s -t fstype [-o otpions] <device> <dir>\n", argv[0]);
+      printf("usage: %s -t fstype [-u] [-o otpions] <device> <dir>\n", argv[0]);
       break;
     }
   }
