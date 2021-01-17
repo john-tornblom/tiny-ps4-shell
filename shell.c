@@ -145,7 +145,7 @@ shell_splitstring(char *line, char *delim) {
   char *token, **tokens_backup;
 
   if(!tokens) {
-    printf("malloc: %s\n", strerror(errno));
+    fprintf(stderr, "malloc: %s\n", strerror(errno));
     return NULL;
   }
 
@@ -159,7 +159,7 @@ shell_splitstring(char *line, char *delim) {
       tokens_backup = tokens;
       tokens = realloc(tokens, bufsize * sizeof(char*));
       if(!tokens) {
-	printf("realloc: %s\n", strerror(errno));
+	fprintf(stderr, "realloc: %s\n", strerror(errno));
 	free(tokens_backup);
 	return NULL;
       }
