@@ -111,6 +111,23 @@ sys_dup2(int oldfd, int newfd) {
 
 
 /**
+ * The setsid syscall needs aditional application capabilities.
+ **/
+pid_t
+sys_setsid(void) {
+  uint64_t attrs = app_get_attributes();
+  
+  app_set_attributes(attrs | (1ULL << 62));
+  
+  pid_t res = setsid();
+
+  app_set_attributes(attrs);
+  
+  return res;
+}
+
+
+/**
  * The pipe syscall needs aditional application capabilities.
  **/
 int
@@ -163,14 +180,8 @@ static void on_SIGSTOP(int sig) {
  **/
 void
 sys_init(void) {
-  uint64_t attrs = app_get_attributes();
-  
-  app_set_attributes(attrs | (1ULL << 62));
-  if(setsid() < 0) {
-    sys_notify("setsid: %s", strerror(errno));
-  }
-  app_set_attributes(attrs);
-  
+  app_enable_mmap_self();
+  sys_setsid();
   pgid = getpgrp();
   signal(17, on_SIGSTOP);
 }

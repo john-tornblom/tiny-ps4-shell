@@ -34,12 +34,43 @@ along with this program; see the file COPYING. If not, see
 
 #define SYS_kexec 11
 
+#define X86_CR0_WP (1 << 16)
 
 unsigned long long int __readmsr(unsigned long __register) {
   unsigned long __edx;
   unsigned long __eax;
   __asm__("rdmsr" : "=d"(__edx), "=a"(__eax) : "c"(__register));
   return (((unsigned long long int)__edx) << 32) | (unsigned long long int)__eax;
+}
+
+
+static inline __attribute__((always_inline))
+uint64_t read_cr0(void) {
+    uint64_t cr0;
+    __asm__ ("movq %0, %%cr0" : "=r" (cr0) : : "memory");
+    return cr0;
+}
+
+
+static inline __attribute__((always_inline))
+void write_cr0(uint64_t cr0) {
+    __asm__ ("movq %%cr0, %0" : : "r" (cr0) : "memory");
+}
+
+
+static inline __attribute__((always_inline))
+void cpu_enable_wp(void)
+{
+    uint64_t cr0 = read_cr0();
+    write_cr0(cr0 | X86_CR0_WP);
+}
+
+
+static inline __attribute__((always_inline))
+void cpu_disable_wp(void)
+{
+    uint64_t cr0 = read_cr0();
+    write_cr0(cr0 & ~X86_CR0_WP);
 }
 
 
@@ -244,6 +275,9 @@ kern_get_offsets(struct kern_offset *kern, unsigned int sw_ver) {
     kern->root_vnode = (void **)&ptr[K670_ROOTVNODE];
     kern->copyin = (void *)(base + K670_COPYIN);
     kern->copyout = (void *)(base + K670_COPYOUT);
+    kern->mmap_self_patch1 = &ptr[K670_MMAP_SELF_1];
+    kern->mmap_self_patch2 = &ptr[K670_MMAP_SELF_2];
+    kern->mmap_self_patch3 = &ptr[K670_MMAP_SELF_3];
     break;
 
   case 0x700:
@@ -261,6 +295,49 @@ kern_get_offsets(struct kern_offset *kern, unsigned int sw_ver) {
     return -1;
   }
 
+  return 0;
+}
+
+
+static int
+kexec_enable_mmap_self(struct thread *td, struct kexec_ctx *ctx) {
+  struct kern_offset kern;
+
+  kern_get_offsets(&kern, ctx->sw_ver);
+
+  if(!kern.mmap_self_patch1 ||
+     !kern.mmap_self_patch2 ||
+     !kern.mmap_self_patch3) {
+    return EFAULT;
+  }
+
+  cpu_disable_wp();
+  
+  // sceSblACMgrIsAllowedToMmapSelf result
+  kern.mmap_self_patch1[0] = 0xB8;
+  kern.mmap_self_patch1[1] = 0x01;
+  kern.mmap_self_patch1[2] = 0x00;
+  kern.mmap_self_patch1[3] = 0x00;
+  kern.mmap_self_patch1[4] = 0x00;
+  kern.mmap_self_patch1[5] = 0xC3;
+
+  // sceSblACMgrHasMmapSelfCapability result
+  kern.mmap_self_patch2[0] = 0xB8;
+  kern.mmap_self_patch2[1] = 0x01;
+  kern.mmap_self_patch2[2] = 0x00;
+  kern.mmap_self_patch2[3] = 0x00;
+  kern.mmap_self_patch2[4] = 0x00;
+  kern.mmap_self_patch2[5] = 0xC3;
+
+  // sceSblAuthMgrIsLoadable bypass
+  kern.mmap_self_patch3[0] = 0x31;
+  kern.mmap_self_patch3[1] = 0xC0;
+  kern.mmap_self_patch3[2] = 0x90;
+  kern.mmap_self_patch3[3] = 0x90;
+  kern.mmap_self_patch2[4] = 0x90;
+
+  cpu_enable_wp();
+    
   return 0;
 }
 
@@ -504,6 +581,17 @@ int
 app_jailbreak(void) {
   unsigned int sw_ver = libc_sw_version();
   if(syscall(SYS_kexec, kexec_jailbreak, sw_ver)) {
+    return -1;
+  }
+
+  return 0;
+}
+
+
+int
+app_enable_mmap_self(void) {
+  unsigned int sw_ver = libc_sw_version();
+  if(syscall(SYS_kexec, kexec_enable_mmap_self, sw_ver)) {
     return -1;
   }
 

@@ -20,6 +20,7 @@ along with this program; see the file COPYING. If not, see
 
 void sys_init(void);
 pid_t sys_fork(void);
+pid_t sys_setsid(void);
 pid_t sys_waitpid(pid_t pid, int *wstatus, int options);
 int sys_dup(int oldfd);
 int sys_dup2(int oldfd, int newfd);

@@ -188,6 +188,119 @@ along with this program; see the file COPYING. If not, see
 #define K672_COPYOUT               0x003C16B0
 #define K700_COPYOUT               0x0002F140
 
+#define K300_MMAP_SELF_1           0x0
+#define K310_MMAP_SELF_1           0x0
+#define K311_MMAP_SELF_1           0x0
+#define K315_MMAP_SELF_1           0x0045C240
+#define K350_MMAP_SELF_1           0x00394BF0
+#define K355_MMAP_SELF_1           0x00395020
+#define K370_MMAP_SELF_1           0x003950F0
+#define K400_MMAP_SELF_1           0x003604C0
+#define K401_MMAP_SELF_1           0x003604C0
+#define K405_MMAP_SELF_1           0x003605F0
+#define K406_MMAP_SELF_1           0x00360600
+#define K407_MMAP_SELF_1           0x00360600
+#define K450_MMAP_SELF_1           0x0016A5B0
+#define K455_MMAP_SELF_1           0x0016A5B0
+#define K470_MMAP_SELF_1           0x00169810
+#define K471_MMAP_SELF_1           0x00169810
+#define K472_MMAP_SELF_1           0x00169810
+#define K473_MMAP_SELF_1           0x00169810
+#define K474_MMAP_SELF_1           0x00169810
+#define K500_MMAP_SELF_1           0x000117B0
+#define K501_MMAP_SELF_1           0x000117B0
+#define K503_MMAP_SELF_1           0x000117B0
+#define K505_MMAP_SELF_1           0x000117B0
+#define K507_MMAP_SELF_1           0x000117B0
+#define K550_MMAP_SELF_1           0x001B4990
+#define K553_MMAP_SELF_1           0x001B4890
+#define K555_MMAP_SELF_1           0x001B4C00
+#define K556_MMAP_SELF_1           0x001B4C00
+#define K600_MMAP_SELF_1           0x00459490
+#define K602_MMAP_SELF_1           0x00459490
+#define K620_MMAP_SELF_1           0x004594B0
+#define K650_MMAP_SELF_1           0x00233890
+#define K651_MMAP_SELF_1           0x00233890
+#define K670_MMAP_SELF_1           0x00233C40
+#define K671_MMAP_SELF_1           0x00233C40
+#define K672_MMAP_SELF_1           0x00233C40
+#define K700_MMAP_SELF_1           0x001CB8F0
+
+#define K300_MMAP_SELF_2           0x0
+#define K310_MMAP_SELF_2           0x0
+#define K311_MMAP_SELF_2           0x0
+#define K315_MMAP_SELF_2           0x0045C250
+#define K350_MMAP_SELF_2           0x00394C00
+#define K355_MMAP_SELF_2           0x00395030
+#define K370_MMAP_SELF_2           0x00395100
+#define K400_MMAP_SELF_2           0x003604D0
+#define K401_MMAP_SELF_2           0x003604D0
+#define K405_MMAP_SELF_2           0x00360600
+#define K406_MMAP_SELF_2           0x00360610
+#define K407_MMAP_SELF_2           0x00360610
+#define K450_MMAP_SELF_2           0x0016A5C0
+#define K455_MMAP_SELF_2           0x0016A5C0
+#define K470_MMAP_SELF_2           0x00169820
+#define K471_MMAP_SELF_2           0x00169820
+#define K472_MMAP_SELF_2           0x00169820
+#define K473_MMAP_SELF_2           0x00169820
+#define K474_MMAP_SELF_2           0x00169820
+#define K500_MMAP_SELF_2           0x000117C0
+#define K501_MMAP_SELF_2           0x000117C0
+#define K503_MMAP_SELF_2           0x000117C0
+#define K505_MMAP_SELF_2           0x000117C0
+#define K507_MMAP_SELF_2           0x000117C0
+#define K550_MMAP_SELF_2           0x001B49A0
+#define K553_MMAP_SELF_2           0x001B48A0
+#define K555_MMAP_SELF_2           0x001B4C10
+#define K556_MMAP_SELF_2           0x001B4C10
+#define K600_MMAP_SELF_2           0x004594A0
+#define K602_MMAP_SELF_2           0x004594A0
+#define K620_MMAP_SELF_2           0x004594C0
+#define K650_MMAP_SELF_2           0x002338A0
+#define K651_MMAP_SELF_2           0x002338A0
+#define K670_MMAP_SELF_2           0x00233C50
+#define K671_MMAP_SELF_2           0x00233C50
+#define K672_MMAP_SELF_2           0x00233C50
+#define K700_MMAP_SELF_2           0x001CB910
+
+#define K300_MMAP_SELF_3           0x0
+#define K310_MMAP_SELF_3           0x0
+#define K311_MMAP_SELF_3           0x0
+#define K315_MMAP_SELF_3           0x00414165
+#define K350_MMAP_SELF_3           0x0034AF55
+#define K355_MMAP_SELF_3           0x0034B385
+#define K370_MMAP_SELF_3           0x0034B455
+#define K400_MMAP_SELF_3           0x0031ED07
+#define K401_MMAP_SELF_3           0x0031ED07
+#define K405_MMAP_SELF_3           0x0031EE37
+#define K406_MMAP_SELF_3           0x0031EE47
+#define K407_MMAP_SELF_3           0x0031EE47
+#define K450_MMAP_SELF_3           0x00143BE7
+#define K455_MMAP_SELF_3           0x00143BE7
+#define K470_MMAP_SELF_3           0x00143277
+#define K471_MMAP_SELF_3           0x00143277
+#define K472_MMAP_SELF_3           0x00143277
+#define K473_MMAP_SELF_3           0x00143277
+#define K474_MMAP_SELF_3           0x00143277
+#define K500_MMAP_SELF_3           0x0013EF2F
+#define K501_MMAP_SELF_3           0x0013EF2F
+#define K503_MMAP_SELF_3           0x0013F03F
+#define K505_MMAP_SELF_3           0x0013F03F
+#define K507_MMAP_SELF_3           0x0013F03F
+#define K550_MMAP_SELF_3           0x003C3FBD
+#define K553_MMAP_SELF_3           0x003C3EBD
+#define K555_MMAP_SELF_3           0x003C427D
+#define K556_MMAP_SELF_3           0x003C427D
+#define K600_MMAP_SELF_3           0x002420A7
+#define K602_MMAP_SELF_3           0x002420A7
+#define K620_MMAP_SELF_3           0x002420A7
+#define K650_MMAP_SELF_3           0x000AD2E4
+#define K651_MMAP_SELF_3           0x000AD2E4
+#define K670_MMAP_SELF_3           0x000AD2E4
+#define K671_MMAP_SELF_3           0x000AD2E4
+#define K672_MMAP_SELF_3           0x000AD2E4
+#define K700_MMAP_SELF_3           0x001D40BB
 
 
 struct kexec_ctx {
@@ -205,5 +318,8 @@ struct kern_offset {
   void  **root_vnode;
   copy_t *copyin;
   copy_t *copyout;
+  unsigned char *mmap_self_patch1;
+  unsigned char *mmap_self_patch2;
+  unsigned char *mmap_self_patch3;
 };
 
