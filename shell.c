@@ -202,8 +202,8 @@ shell_fork(main_t *main, int argc, char **argv) {
   pid_t pid = sys_fork();  
   if (pid == 0) {
     int rc = main(argc, argv);
-    exit(rc);
-    return 0;
+    _exit(rc);
+    return rc;
     
   } else if (pid < 0) {
     fprintf(stderr, "fork: %s\n", strerror(errno));

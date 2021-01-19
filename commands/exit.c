@@ -30,7 +30,7 @@ main_exit(int argc, char **argv) {
     rc = atoi(argv[1]);
   }
 
-  exit(rc);
+  _exit(rc);
     
   return 0;
 }

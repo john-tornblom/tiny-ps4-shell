@@ -82,7 +82,7 @@ client_fork(int master, int slave) {
     } else {
       shell_loop();
     }
-    exit(0);
+    _exit(0);
   } else if (pid < 0) {
     sys_notify("fork: %s", strerror(errno));
   }
