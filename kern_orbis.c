@@ -36,11 +36,12 @@ along with this program; see the file COPYING. If not, see
 
 #define X86_CR0_WP (1 << 16)
 
-unsigned long long int __readmsr(unsigned long __register) {
-  unsigned long __edx;
-  unsigned long __eax;
-  __asm__("rdmsr" : "=d"(__edx), "=a"(__eax) : "c"(__register));
-  return (((unsigned long long int)__edx) << 32) | (unsigned long long int)__eax;
+static inline __attribute__((always_inline))
+uint64_t read_msr(uint32_t reg) {
+    uint32_t edx;
+    uint32_t eax;
+    __asm__ ("rdmsr" : "=d"(edx), "=a"(eax) : "c"(reg));
+    return (((uint64_t)edx) << 32) | (uint64_t)eax;
 }
 
 
@@ -86,7 +87,7 @@ kern_get_offsets(struct kern_offset *kern, unsigned int sw_ver) {
 
   switch(sw_ver) {
   case 0x350:
-    base = &((unsigned char *)__readmsr(0xC0000082))[-K350_XFAST_SYSCALL];
+    base = &((unsigned char *)read_msr(0xC0000082))[-K350_XFAST_SYSCALL];
     ptr = (unsigned char *)base;
     kern->prison0 = (void **)&ptr[K350_PRISON_0];
     kern->root_vnode = (void **)&ptr[K350_ROOTVNODE];
@@ -95,7 +96,7 @@ kern_get_offsets(struct kern_offset *kern, unsigned int sw_ver) {
     break;
     
   case 0x355:
-    base = &((unsigned char *)__readmsr(0xC0000082))[-K355_XFAST_SYSCALL];
+    base = &((unsigned char *)read_msr(0xC0000082))[-K355_XFAST_SYSCALL];
     ptr = (unsigned char *)base;
     kern->prison0 = (void **)&ptr[K355_PRISON_0];
     kern->root_vnode = (void **)&ptr[K355_ROOTVNODE];
@@ -104,7 +105,7 @@ kern_get_offsets(struct kern_offset *kern, unsigned int sw_ver) {
     break;
     
   case 0x370:
-    base = &((unsigned char *)__readmsr(0xC0000082))[-K370_XFAST_SYSCALL];
+    base = &((unsigned char *)read_msr(0xC0000082))[-K370_XFAST_SYSCALL];
     ptr = (unsigned char *)base;
     kern->prison0 = (void **)&ptr[K370_PRISON_0];
     kern->root_vnode = (void **)&ptr[K370_ROOTVNODE];
@@ -114,7 +115,7 @@ kern_get_offsets(struct kern_offset *kern, unsigned int sw_ver) {
     
   case 0x400:
   case 0x401:
-    base = &((unsigned char *)__readmsr(0xC0000082))[-K400_XFAST_SYSCALL];
+    base = &((unsigned char *)read_msr(0xC0000082))[-K400_XFAST_SYSCALL];
     ptr = (unsigned char *)base;
     kern->prison0 = (void **)&ptr[K400_PRISON_0];
     kern->root_vnode = (void **)&ptr[K400_ROOTVNODE];
@@ -123,7 +124,7 @@ kern_get_offsets(struct kern_offset *kern, unsigned int sw_ver) {
     break;
     
   case 0x405:
-    base = &((unsigned char *)__readmsr(0xC0000082))[-K405_XFAST_SYSCALL];
+    base = &((unsigned char *)read_msr(0xC0000082))[-K405_XFAST_SYSCALL];
     ptr = (unsigned char *)base;
     kern->prison0 = (void **)&ptr[K405_PRISON_0];
     kern->root_vnode = (void **)&ptr[K405_ROOTVNODE];
@@ -132,7 +133,7 @@ kern_get_offsets(struct kern_offset *kern, unsigned int sw_ver) {
     break;
 
   case 0x406:
-    base = &((unsigned char *)__readmsr(0xC0000082))[-K406_XFAST_SYSCALL];
+    base = &((unsigned char *)read_msr(0xC0000082))[-K406_XFAST_SYSCALL];
     ptr = (unsigned char *)base;
     kern->prison0 = (void **)&ptr[K406_PRISON_0];
     kern->root_vnode = (void **)&ptr[K406_ROOTVNODE];
@@ -141,7 +142,7 @@ kern_get_offsets(struct kern_offset *kern, unsigned int sw_ver) {
     break;
 
   case 0x407:
-    base = &((unsigned char *)__readmsr(0xC0000082))[-K407_XFAST_SYSCALL];
+    base = &((unsigned char *)read_msr(0xC0000082))[-K407_XFAST_SYSCALL];
     ptr = (unsigned char *)base;
     kern->prison0 = (void **)&ptr[K407_PRISON_0];
     kern->root_vnode = (void **)&ptr[K407_ROOTVNODE];
@@ -151,7 +152,7 @@ kern_get_offsets(struct kern_offset *kern, unsigned int sw_ver) {
 
   case 0x450:
   case 0x455:
-    base = &((unsigned char *)__readmsr(0xC0000082))[-K450_XFAST_SYSCALL];
+    base = &((unsigned char *)read_msr(0xC0000082))[-K450_XFAST_SYSCALL];
     ptr = (unsigned char *)base;
     kern->prison0 = (void **)&ptr[K450_PRISON_0];
     kern->root_vnode = (void **)&ptr[K450_ROOTVNODE];
@@ -160,7 +161,7 @@ kern_get_offsets(struct kern_offset *kern, unsigned int sw_ver) {
     break;
 
   case 0x470:
-    base = &((unsigned char *)__readmsr(0xC0000082))[-K470_XFAST_SYSCALL];
+    base = &((unsigned char *)read_msr(0xC0000082))[-K470_XFAST_SYSCALL];
     ptr = (unsigned char *)base;
     kern->prison0 = (void **)&ptr[K470_PRISON_0];
     kern->root_vnode = (void **)&ptr[K470_ROOTVNODE];
@@ -172,7 +173,7 @@ kern_get_offsets(struct kern_offset *kern, unsigned int sw_ver) {
   case 0x472:
   case 0x473:
   case 0x474:
-    base = &((unsigned char *)__readmsr(0xC0000082))[-K471_XFAST_SYSCALL];
+    base = &((unsigned char *)read_msr(0xC0000082))[-K471_XFAST_SYSCALL];
     ptr = (unsigned char *)base;
     kern->prison0 = (void **)&ptr[K471_PRISON_0];
     kern->root_vnode = (void **)&ptr[K471_ROOTVNODE];
@@ -182,7 +183,7 @@ kern_get_offsets(struct kern_offset *kern, unsigned int sw_ver) {
 
   case 0x500:
   case 0x501:
-    base = &((unsigned char *)__readmsr(0xC0000082))[-K501_XFAST_SYSCALL];
+    base = &((unsigned char *)read_msr(0xC0000082))[-K501_XFAST_SYSCALL];
     ptr = (unsigned char *)base;
     kern->prison0 = (void **)&ptr[K500_PRISON_0];
     kern->root_vnode = (void **)&ptr[K500_ROOTVNODE];
@@ -191,7 +192,7 @@ kern_get_offsets(struct kern_offset *kern, unsigned int sw_ver) {
     break;
 
   case 0x503:
-    base = &((unsigned char *)__readmsr(0xC0000082))[-K503_XFAST_SYSCALL];
+    base = &((unsigned char *)read_msr(0xC0000082))[-K503_XFAST_SYSCALL];
     ptr = (unsigned char *)base;
     kern->prison0 = (void **)&ptr[K503_PRISON_0];
     kern->root_vnode = (void **)&ptr[K503_ROOTVNODE];
@@ -201,7 +202,7 @@ kern_get_offsets(struct kern_offset *kern, unsigned int sw_ver) {
 
   case 0x505:
   case 0x507:
-    base = &((unsigned char *)__readmsr(0xC0000082))[-K505_XFAST_SYSCALL];
+    base = &((unsigned char *)read_msr(0xC0000082))[-K505_XFAST_SYSCALL];
     ptr = (unsigned char *)base;
     kern->prison0 = (void **)&ptr[K505_PRISON_0];
     kern->root_vnode = (void **)&ptr[K505_ROOTVNODE];
@@ -210,7 +211,7 @@ kern_get_offsets(struct kern_offset *kern, unsigned int sw_ver) {
     break;
     
   case 0x550:
-    base = &((unsigned char *)__readmsr(0xC0000082))[-K550_XFAST_SYSCALL];
+    base = &((unsigned char *)read_msr(0xC0000082))[-K550_XFAST_SYSCALL];
     ptr = (unsigned char *)base;
     kern->prison0 = (void **)&ptr[K550_PRISON_0];
     kern->root_vnode = (void **)&ptr[K550_ROOTVNODE];
@@ -219,7 +220,7 @@ kern_get_offsets(struct kern_offset *kern, unsigned int sw_ver) {
     break;
 
   case 0x553:
-    base = &((unsigned char *)__readmsr(0xC0000082))[-K553_XFAST_SYSCALL];
+    base = &((unsigned char *)read_msr(0xC0000082))[-K553_XFAST_SYSCALL];
     ptr = (unsigned char *)base;
     kern->prison0 = (void **)&ptr[K553_PRISON_0];
     kern->root_vnode = (void **)&ptr[K553_ROOTVNODE];
@@ -229,7 +230,7 @@ kern_get_offsets(struct kern_offset *kern, unsigned int sw_ver) {
 
   case 0x555:
   case 0x556:
-    base = &((unsigned char *)__readmsr(0xC0000082))[-K555_XFAST_SYSCALL];
+    base = &((unsigned char *)read_msr(0xC0000082))[-K555_XFAST_SYSCALL];
     ptr = (unsigned char *)base;
     kern->prison0 = (void **)&ptr[K555_PRISON_0];
     kern->root_vnode = (void **)&ptr[K555_ROOTVNODE];
@@ -239,7 +240,7 @@ kern_get_offsets(struct kern_offset *kern, unsigned int sw_ver) {
 
   case 0x600:
   case 0x602:
-    base = &((unsigned char *)__readmsr(0xC0000082))[-K600_XFAST_SYSCALL];
+    base = &((unsigned char *)read_msr(0xC0000082))[-K600_XFAST_SYSCALL];
     ptr = (unsigned char *)base;
     kern->prison0 = (void **)&ptr[K600_PRISON_0];
     kern->root_vnode = (void **)&ptr[K600_ROOTVNODE];
@@ -248,7 +249,7 @@ kern_get_offsets(struct kern_offset *kern, unsigned int sw_ver) {
     break;
 
   case 0x620:
-    base = &((unsigned char *)__readmsr(0xC0000082))[-K620_XFAST_SYSCALL];
+    base = &((unsigned char *)read_msr(0xC0000082))[-K620_XFAST_SYSCALL];
     ptr = (unsigned char *)base;
     kern->prison0 = (void **)&ptr[K620_PRISON_0];
     kern->root_vnode = (void **)&ptr[K620_ROOTVNODE];
@@ -258,7 +259,7 @@ kern_get_offsets(struct kern_offset *kern, unsigned int sw_ver) {
 
   case 0x650:
   case 0x651:
-    base = &((unsigned char *)__readmsr(0xC0000082))[-K650_XFAST_SYSCALL];
+    base = &((unsigned char *)read_msr(0xC0000082))[-K650_XFAST_SYSCALL];
     ptr = (unsigned char *)base;
     kern->prison0 = (void **)&ptr[K650_PRISON_0];
     kern->root_vnode = (void **)&ptr[K650_ROOTVNODE];
@@ -269,7 +270,7 @@ kern_get_offsets(struct kern_offset *kern, unsigned int sw_ver) {
   case 0x670:
   case 0x671:
   case 0x672:
-    base = &((unsigned char *)__readmsr(0xC0000082))[-K670_XFAST_SYSCALL];
+    base = &((unsigned char *)read_msr(0xC0000082))[-K670_XFAST_SYSCALL];
     ptr = (unsigned char *)base;
     kern->prison0 = (void **)&ptr[K670_PRISON_0];
     kern->root_vnode = (void **)&ptr[K670_ROOTVNODE];
@@ -283,7 +284,7 @@ kern_get_offsets(struct kern_offset *kern, unsigned int sw_ver) {
   case 0x700:
   case 0x701:
   case 0x702:
-    base = &((unsigned char *)__readmsr(0xC0000082))[-K700_XFAST_SYSCALL];
+    base = &((unsigned char *)read_msr(0xC0000082))[-K700_XFAST_SYSCALL];
     ptr = (unsigned char *)base;
     kern->prison0 = (void **)&ptr[K700_PRISON_0];
     kern->root_vnode = (void **)&ptr[K700_ROOTVNODE];

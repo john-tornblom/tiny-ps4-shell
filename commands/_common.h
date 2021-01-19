@@ -17,6 +17,7 @@ along with this program; see the file COPYING. If not, see
 #pragma once
 
 #include <stdint.h>
+#include <stdlib.h>
 
 char* get_workdir(void);
 char* normpath(const char *path);
