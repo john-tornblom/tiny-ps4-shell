@@ -21,6 +21,7 @@ along with this program; see the file COPYING. If not, see
 #include <sys/types.h>
 #include <signal.h>
 #include <stdlib.h>
+#include <ctype.h>
 
 
 /**
@@ -30,11 +31,13 @@ int
 main_kill(int argc, char **argv) {
   pid_t pid;
   
-  if(argc <= 1 || !(pid = atoi(argv[1]))) {
+  if(argc <= 1 || !isdigit(argv[1][0])) {
     printf("usage: %s pid\n", argv[0]);
     return -1;
   }
 
+  pid = atoi(argv[1]);
+  
   if(kill(pid, SIGTERM)) {
     perror(argv[0]);
     return -1;
