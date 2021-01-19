@@ -24,93 +24,71 @@ along with this program; see the file COPYING. If not, see
 #include "_common.h"
 
 
-static void
-hexdump(void *data, size_t size) {
-  char* p = (char*)data;
-
-  printf("0x%08x  ", 0);
-  for(int i=0; i<size; i++) {    
-    if(i && i%16 == 0) {
-      printf("| ");
-      for(int j=0; j<16; j++) {
-	char ch = p[i-16+j];
-
-	if(isblank(ch)) {
-	  printf(" ");
-	  
-	} else if(isprint(ch)) {
-	  printf("%c", ch);
-	}
-      }
-      printf("\n0x%08x  ", i);
-    }
-    printf("%02X ", (uint8_t)p[i]);
-  }
-
-  int mod = size % 16;
-  for(int i=mod; i<16; i++) {
-    printf("   ");
-  }
-
-  printf("| ");
-  for(int i=0; i<mod; i++) {
-    char ch = p[size-mod+i];
-
-    if(isblank(ch)) {
-      printf(" ");
-      
-    } else if(isprint(ch)) {
-      printf("%c", ch);
-    }
-  }
-  printf("\n");
+static int
+fgetb(uint8_t *buf, size_t size, FILE *fp) {
+  int c;
   
+  for(int i=0; i<size; i++) {
+    if((c = fgetc(fp)) < 0) {
+      return i;
+    }
+    buf[i] = c;
+  }
+
+  return size;
+}
+
+
+static void
+hexdump_file(FILE *fp) {
+  uint8_t buf[16];
+  int size = 0;
+  int n;
+  
+  while((n = fgetb(buf, sizeof(buf), fp))) {
+    printf("%08x  ", size);
+
+    for(int i=0; i<n; i++) {
+      printf("%02x ", buf[i]);
+    }
+
+    for(int i=n; i<sizeof(buf); i++) {
+      printf("   ");
+    }
+
+    printf("| ");
+    
+    for(int i=0; i<n; i++) {
+      if(isblank(buf[i])) {
+	printf(" ");
+	
+      } else if(!isprint(buf[i])) {
+	printf(".");
+	
+      } else {
+	printf("%c", buf[i]);
+      }
+    }
+    printf("\n");
+    size += n;
+  }
 }
 
 
 int main_hexdump(int argc, char **argv) {
-  FILE *fp;
-  int size;
-  void *buf;
+  FILE *fp = stdin;
   
-  if(argc <= 1) {
-    fprintf(stderr, "%s: missing operand\n", argv[0]);
-    return -1;
+  if(argc > 1) {
+    char *path = abspath(argv[1]);
+
+    if(!(fp = fopen(path, "rb"))) {
+      perror(argv[1]);
+      return -1;
+    }
+    free(path);    
   }
 
-  char *path = abspath(argv[1]);
-  fp = fopen(path, "rb");
-  free(path);
-  
-  if(!fp) {
-    perror(argv[1]);
-    return -1;
-  }
-
-  if(fseek(fp, 0, SEEK_END)) {
-    perror(argv[1]);
-    return -1;
-  }
-
-  if((size = ftell(fp)) < 0) {
-    perror(argv[1]);
-    return -1;
-  }
-  
-  rewind(fp);
-
-  if(!(buf = malloc(size))) {
-    perror(argv[1]);
-    return -1;
-  }
-
-  if(fread(buf, sizeof(char), size, fp) < 0) {
-    perror(argv[1]);
-    return -1;
-  }
-
-  hexdump(buf, size);
-  free(buf);
+  hexdump_file(fp);
 
   return 0;
 }

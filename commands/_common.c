@@ -131,3 +131,41 @@ abspath(const char *relpath) {
   return normpath(buf, ap, PATH_MAX);
 }
 
+
+/**
+ * Dump a memory region to stdout
+ **/
+void
+hexdump(void *data, size_t size) {
+
+  for(int i=0; i<size; i+=16) {
+    uint8_t *buf = (uint8_t*)data+i;
+    int n = i + 16 < size ? 16 : size % 16;
+    
+    printf("%08x  ", i);
+    
+    for(int j=0; j<n; j++) {
+      printf("%02x ", buf[j]);
+    }
+
+    for(int j=n; j<16; j++) {
+      printf("   ");
+    }
+
+    printf("| ");
+    
+    for(int j=0; j<n; j++) {
+      if(isblank(buf[j])) {
+	printf(" ");
+ 
+      } else if(!isprint(buf[j])) {
+	printf(".");
+ 
+      } else {
+	printf("%c", buf[j]);
+      }
+    }
+    printf("\n");
+  }
+}
+
