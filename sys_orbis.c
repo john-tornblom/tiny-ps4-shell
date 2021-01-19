@@ -25,6 +25,9 @@ along with this program; see the file COPYING. If not, see
 #include <orbis/SysUtil.h>
 
 #include "kern_orbis.h"
+#include "sys.h"
+
+#define SYS_getfsstat 395
 
 
 /**
@@ -137,6 +140,23 @@ sys_pipe(int pipefd[2]) {
   app_set_capabilities(caps | (1ULL << 62));
   
   int res = pipe(pipefd);
+
+  app_set_capabilities(caps);
+  
+  return res;
+}
+
+
+/**
+ * The getfsstat syscall needs additional application capabillities.
+ **/
+int
+sys_getfsstat(struct statfs *buf, long bufsize, int mode) {
+  uint64_t caps = app_get_capabilities();
+  
+  app_set_capabilities(caps | (1ULL << 62));
+  
+  int res = syscall(SYS_getfsstat, buf, bufsize, mode);
 
   app_set_capabilities(caps);
   
