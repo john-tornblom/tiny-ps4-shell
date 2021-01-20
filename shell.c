@@ -73,6 +73,7 @@ shell_command_t commands[] = {
   {"ps", main_ps, 1},
   {"pwd", main_pwd, 1},
   {"rmdir", main_rmdir, 1},
+  {"self2elf", main_self2elf, 1},
   {"setegid", main_setegid, 0},
   {"seteuid", main_seteuid, 0},
   {"setgid", main_setgid, 0},

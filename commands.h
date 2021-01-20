@@ -33,6 +33,7 @@ int main_mount(int argc, char **argv);
 int main_ps(int argc, char** argv);
 int main_pwd(int argc, char **argv);
 int main_rmdir(int argc, char **argv);
+int main_self2elf(int argc, char **argv);
 int main_setegid(int argc, char **argv);
 int main_seteuid(int argc, char **argv);
 int main_setgid(int argc, char **argv);
