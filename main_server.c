@@ -51,15 +51,15 @@ client_init(int fd) {
     }
   }
   
-  if(sys_dup2(fd, STDIN_FILENO) < 0) {
+  if(dup2(fd, STDIN_FILENO) < 0) {
     return -1;
   }
     
-  if(sys_dup2(fd, STDOUT_FILENO) < 0) {
+  if(dup2(fd, STDOUT_FILENO) < 0) {
     return -1;
   }
   
-  if(sys_dup2(fd, STDERR_FILENO) < 0) {
+  if(dup2(fd, STDERR_FILENO) < 0) {
     return -1;
   }
 
@@ -73,7 +73,7 @@ client_init(int fd) {
  **/
 static void
 client_fork(int master, int slave) {
-  pid_t pid = sys_fork();
+  pid_t pid = fork();
   
   if (pid == 0) {
     close(master);

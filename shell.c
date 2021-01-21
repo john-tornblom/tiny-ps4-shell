@@ -201,7 +201,7 @@ shell_prompt(void) {
  **/
 static int
 shell_fork(main_t *main, int argc, char **argv) {
-  pid_t pid = sys_fork();  
+  pid_t pid = fork();  
   if (pid == 0) {
     int rc = main(argc, argv);
     _exit(rc);
@@ -214,7 +214,7 @@ shell_fork(main_t *main, int argc, char **argv) {
   } else {
     int status = 0;
     do {
-      sys_waitpid(pid, &status, WUNTRACED);
+      waitpid(pid, &status, WUNTRACED);
     } while (!WIFEXITED(status) && !WIFSIGNALED(status));
 
     return WEXITSTATUS(status);
@@ -291,28 +291,28 @@ shell_loop(void) {
       continue;
     }
 
-    infd = sys_dup(0);
-    outfd = sys_dup(1);
+    infd = dup(0);
+    outfd = dup(1);
     
     for(int i=0; cmds[i]; i++) {
       if(!(args = shell_splitstring(cmds[i], SHELL_ARG_DELIM))) {
 	continue;
       }
       
-      if(cmds[i+1] && !sys_pipe(pipefd)) {
-	sys_dup2(pipefd[1], 1);
+      if(cmds[i+1] && !pipe(pipefd)) {
+	dup2(pipefd[1], 1);
 	close(pipefd[1]);
       } else {
-	sys_dup2(outfd, 1);
+	dup2(outfd, 1);
       }
       
       exit_code = shell_execute(args);
 
       if(cmds[i+1]) {
-	sys_dup2(pipefd[0], 0);
+	dup2(pipefd[0], 0);
 	close(pipefd[0]);
       } else {
-	sys_dup2(infd, 0);
+	dup2(infd, 0);
       }
 
       fflush(NULL);

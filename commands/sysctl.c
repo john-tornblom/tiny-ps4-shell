@@ -37,13 +37,7 @@ main_sysctl(int argc, char **argv) {
     return -1;
   }
 
-#ifdef __ORBIS__
-  uint64_t caps = app_get_capabilities();
-  uint64_t attrs = app_get_attributes();
-
-  app_set_attributes(attrs | (1ULL << 62));
-  app_set_capabilities(caps | (1ULL << 62));
-  
+#ifdef __ORBIS__  
   if((sysctlbyname(argv[1], 0, &size, 0, 0))) {
     perror(argv[0]);
   } else {
@@ -57,9 +51,6 @@ main_sysctl(int argc, char **argv) {
     hexdump(buf, size);
     free(buf);
   }
-  
-  app_set_attributes(attrs);
-  app_set_capabilities(caps);
 #endif
   
   return 0;

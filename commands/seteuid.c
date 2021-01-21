@@ -14,42 +14,22 @@ You should have received a copy of the GNU General Public License
 along with this program; see the file COPYING. If not, see
 <http://www.gnu.org/licenses/>.  */
 
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
-#include <sys/stat.h>
-#include <limits.h>
-
-#include <sys/types.h>
-#include <unistd.h>
-
-#include "kern_orbis.h"
 
 
 int
 main_seteuid(int argc, char **argv) {
   if(argc <= 1) {
     printf("%s: missing operand\n", argv[0]);
-    return -1;
+    return EXIT_FAILURE;
   }
   
-#ifdef __ORBIS__
-  uint64_t attrs = app_get_attributes();
-  uint64_t caps = app_get_capabilities();
-  
-  app_set_attributes(attrs | (1ULL << 62));
-  app_set_capabilities(caps | (1ULL << 62));
-  
-  seteuid(atoi(argv[1]));
+  if(seteuid(atoi(argv[1]))) {
+    perror(argv[0]);
+    return EXIT_FAILURE;
+  }
 
-  app_set_attributes(attrs);
-  app_set_capabilities(caps);
-#else
-  seteuid(atoi(argv[1]));  
-#endif
-
-  return 0;
+  return EXIT_SUCCESS;
 }
-
-
-

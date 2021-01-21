@@ -27,8 +27,6 @@ along with this program; see the file COPYING. If not, see
 #include "kern_orbis.h"
 #include "sys.h"
 
-#define SYS_getfsstat 395
-
 
 /**
  * Generate a UI notification.
@@ -58,124 +56,6 @@ sys_getcwd(char *buf, size_t size) {
     return NULL;
   }
   return buf;
-}
-
-
-/**
- * The fork syscall needs additional application attributes.
- **/
-pid_t
-sys_fork(void) {
-  uint64_t attrs = app_get_attributes();
-
-  app_set_attributes(attrs | (1ULL << 62));
-
-  pid_t pid = fork();
-  
-  app_set_attributes(attrs);
-  
-  return pid;
-}
-
-
-/**
- * The waitpid syscall needs additional application attributes.
- **/
-pid_t
-sys_waitpid(pid_t pid, int *wstatus, int options) {
-  uint64_t attrs = app_get_attributes();
-
-  app_set_attributes(attrs | (1ULL << 62));
-
-  pid = waitpid(pid, wstatus, options);
-  
-  app_set_attributes(attrs);
-  
-  return pid;
-}
-
-
-/**
- * The dup syscall needs aditional application capabilities.
- **/
-int sys_dup(int oldfd) {
-  uint64_t caps = app_get_capabilities();
-  
-  app_set_capabilities(caps | (1ULL << 62));
-  
-  int res = dup(oldfd);
-
-  app_set_capabilities(caps);
-  
-  return res;
-}
-
-
-/**
- * The dup2 syscall needs aditional application capabilities.
- **/
-int
-sys_dup2(int oldfd, int newfd) {
-  uint64_t caps = app_get_capabilities();
-  
-  app_set_capabilities(caps | (1ULL << 62));
-  
-  int res = dup2(oldfd, newfd);
-
-  app_set_capabilities(caps);
-  
-  return res;
-}
-
-
-/**
- * The setsid syscall needs aditional application capabilities.
- **/
-pid_t
-sys_setsid(void) {
-  uint64_t attrs = app_get_attributes();
-  
-  app_set_attributes(attrs | (1ULL << 62));
-  
-  pid_t res = setsid();
-
-  app_set_attributes(attrs);
-  
-  return res;
-}
-
-
-/**
- * The pipe syscall needs aditional application capabilities.
- **/
-int
-sys_pipe(int pipefd[2]) {
-  uint64_t caps = app_get_capabilities();
-  
-  app_set_capabilities(caps | (1ULL << 62));
-  
-  int res = pipe(pipefd);
-
-  app_set_capabilities(caps);
-  
-  return res;
-}
-
-
-/**
- * The getfsstat syscall needs additional application capabillities.
- **/
-int
-sys_getfsstat(struct statfs *buf, long bufsize, int mode) {
-  uint64_t caps = app_get_capabilities();
-  
-  app_set_capabilities(caps | (1ULL << 62));
-  
-  int res = syscall(SYS_getfsstat, buf, bufsize, mode);
-
-  app_set_capabilities(caps);
-  
-  return res;
 }
 
 
@@ -215,7 +95,13 @@ static void on_SIGSTOP(int sig) {
  **/
 void
 sys_init(void) {
-  sys_setsid();
+  uint64_t attrs = app_get_attributes();
+  uint64_t caps = app_get_capabilities();
+
+  app_set_attributes(attrs | (1ULL << 62));
+  app_set_capabilities(caps | (1ULL << 62));
+
+  setsid();
   pgid = getpgrp();
   signal(17, on_SIGSTOP);
 }
