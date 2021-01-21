@@ -217,7 +217,13 @@ shell_fork(main_t *main, int argc, char **argv) {
       waitpid(pid, &status, WUNTRACED);
     } while (!WIFEXITED(status) && !WIFSIGNALED(status));
 
-    return WEXITSTATUS(status);
+    if(WIFEXITED(status)) {
+      return WEXITSTATUS(status);
+    } else {
+      fprintf(stderr, "%s\n", strsignal(WTERMSIG(status)));
+      
+      return EXIT_FAILURE;
+    }
   }
 }
 
