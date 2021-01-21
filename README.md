@@ -32,7 +32,7 @@ To obtain root permissions:
 
 To mount procfs and get list of processes:
 ```console
-/$ mkdir proc
+/$ mkdir /proc
 /$ mount -t procfs proc /proc
 /$ ps
      PID      PPID     PGID      SID    TTY    COMMAND
@@ -53,7 +53,7 @@ To monitor kernel log:
 
 To decrypt SELF and SPRX files:
 ```console
-/$  self2elf /mini-syscore.elf /mnt/usb0/mini-syscore.el
+/$  self2elf /mini-syscore.elf /mnt/usb0/mini-syscore.elf
 ```
 
 ## Limitations
