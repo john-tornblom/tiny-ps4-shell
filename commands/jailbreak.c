@@ -14,6 +14,8 @@ You should have received a copy of the GNU General Public License
 along with this program; see the file COPYING. If not, see
 <http://www.gnu.org/licenses/>.  */
 
+#include <unistd.h>
+
 #include "kern_orbis.h"
 
 
@@ -26,6 +28,8 @@ main_jailbreak(int argc, char **argv) {
 #ifdef __ORBIS__
   app_jailbreak();
 #endif
+
+  seteuid(0);
   
   return 0;
 }
