@@ -200,7 +200,6 @@ static void on_SIGSTOP(int sig) {
  **/
 void
 sys_init(void) {
-  //app_enable_mmap_self();
   sys_setsid();
   pgid = getpgrp();
   signal(17, on_SIGSTOP);

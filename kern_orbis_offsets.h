@@ -318,8 +318,5 @@ struct kern_offset {
   void  **root_vnode;
   copy_t *copyin;
   copy_t *copyout;
-  unsigned char *mmap_self_patch1;
-  unsigned char *mmap_self_patch2;
-  unsigned char *mmap_self_patch3;
 };
 

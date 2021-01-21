@@ -276,9 +276,6 @@ kern_get_offsets(struct kern_offset *kern, unsigned int sw_ver) {
     kern->root_vnode = (void **)&ptr[K670_ROOTVNODE];
     kern->copyin = (void *)(base + K670_COPYIN);
     kern->copyout = (void *)(base + K670_COPYOUT);
-    kern->mmap_self_patch1 = &ptr[K670_MMAP_SELF_1];
-    kern->mmap_self_patch2 = &ptr[K670_MMAP_SELF_2];
-    kern->mmap_self_patch3 = &ptr[K670_MMAP_SELF_3];
     break;
 
   case 0x700:
@@ -296,49 +293,6 @@ kern_get_offsets(struct kern_offset *kern, unsigned int sw_ver) {
     return -1;
   }
 
-  return 0;
-}
-
-
-static int
-kexec_enable_mmap_self(struct thread *td, struct kexec_ctx *ctx) {
-  struct kern_offset kern;
-
-  kern_get_offsets(&kern, ctx->sw_ver);
-
-  if(!kern.mmap_self_patch1 ||
-     !kern.mmap_self_patch2 ||
-     !kern.mmap_self_patch3) {
-    return EFAULT;
-  }
-
-  cpu_disable_wp();
-  
-  // sceSblACMgrIsAllowedToMmapSelf result
-  kern.mmap_self_patch1[0] = 0xB8;
-  kern.mmap_self_patch1[1] = 0x01;
-  kern.mmap_self_patch1[2] = 0x00;
-  kern.mmap_self_patch1[3] = 0x00;
-  kern.mmap_self_patch1[4] = 0x00;
-  kern.mmap_self_patch1[5] = 0xC3;
-
-  // sceSblACMgrHasMmapSelfCapability result
-  kern.mmap_self_patch2[0] = 0xB8;
-  kern.mmap_self_patch2[1] = 0x01;
-  kern.mmap_self_patch2[2] = 0x00;
-  kern.mmap_self_patch2[3] = 0x00;
-  kern.mmap_self_patch2[4] = 0x00;
-  kern.mmap_self_patch2[5] = 0xC3;
-
-  // sceSblAuthMgrIsLoadable bypass
-  kern.mmap_self_patch3[0] = 0x31;
-  kern.mmap_self_patch3[1] = 0xC0;
-  kern.mmap_self_patch3[2] = 0x90;
-  kern.mmap_self_patch3[3] = 0x90;
-  kern.mmap_self_patch2[4] = 0x90;
-
-  cpu_enable_wp();
-    
   return 0;
 }
 
@@ -582,17 +536,6 @@ int
 app_jailbreak(void) {
   unsigned int sw_ver = libc_sw_version();
   if(syscall(SYS_kexec, kexec_jailbreak, sw_ver)) {
-    return -1;
-  }
-
-  return 0;
-}
-
-
-int
-app_enable_mmap_self(void) {
-  unsigned int sw_ver = libc_sw_version();
-  if(syscall(SYS_kexec, kexec_enable_mmap_self, sw_ver)) {
     return -1;
   }
 
