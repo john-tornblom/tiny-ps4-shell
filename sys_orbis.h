@@ -16,7 +16,9 @@ along with this program; see the file COPYING. If not, see
 
 #pragma once
 
+#include <sys/types.h>
 #include <stdint.h>
+
 struct statfs;
 
 void sys_init(void);
