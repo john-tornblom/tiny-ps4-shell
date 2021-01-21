@@ -27,7 +27,6 @@ along with this program; see the file COPYING. If not, see
  **/
 char*
 get_workdir(void) {
-  //getcwd() does not seem to be not working on the PS4
   return getenv("PWD");
 }
 

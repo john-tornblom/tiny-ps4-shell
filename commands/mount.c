@@ -24,10 +24,10 @@ along with this program; see the file COPYING. If not, see
 #include <stdlib.h>
 
 #include "_common.h"
-#include "sys.h"
 
 
 #define SYS_nmount    378
+#define SYS_getfsstat 395
 
 #define MNT_UPDATE      0x0000000000010000ULL
 
@@ -76,6 +76,7 @@ struct statfs {
 #else
 #include <sys/statfs.h>
 #endif //__ORBIS__
+
 
 static void
 build_iovec(struct iovec **iov, int *iovlen, const char *name, const char *val) {
@@ -176,7 +177,7 @@ getmntinfo(struct statfs **bufp, int mode) {
   int size = 0;
   int size2 = 0;
   
-  if((nitems = sys_getfsstat(0, 0, MNT_NOWAIT)) < 0) {
+  if((nitems = syscall(SYS_getfsstat, 0, 0, MNT_NOWAIT)) < 0) {
     return -1;
   }
 
@@ -188,7 +189,7 @@ getmntinfo(struct statfs **bufp, int mode) {
 
   memset(buf, 0, size);
   
-  if((size2 = sys_getfsstat(buf, size, mode)) < 0) {
+  if((size2 = syscall(SYS_getfsstat, buf, size, mode)) < 0) {
     return -1;
   }
   
