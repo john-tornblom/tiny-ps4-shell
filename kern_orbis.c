@@ -45,36 +45,6 @@ uint64_t read_msr(uint32_t reg) {
 }
 
 
-static inline __attribute__((always_inline))
-uint64_t read_cr0(void) {
-    uint64_t cr0;
-    __asm__ ("movq %0, %%cr0" : "=r" (cr0) : : "memory");
-    return cr0;
-}
-
-
-static inline __attribute__((always_inline))
-void write_cr0(uint64_t cr0) {
-    __asm__ ("movq %%cr0, %0" : : "r" (cr0) : "memory");
-}
-
-
-static inline __attribute__((always_inline))
-void cpu_enable_wp(void)
-{
-    uint64_t cr0 = read_cr0();
-    write_cr0(cr0 | X86_CR0_WP);
-}
-
-
-static inline __attribute__((always_inline))
-void cpu_disable_wp(void)
-{
-    uint64_t cr0 = read_cr0();
-    write_cr0(cr0 & ~X86_CR0_WP);
-}
-
-
 static int
 kern_get_offsets(struct kern_offset *kern, unsigned int sw_ver) {
   void *base;
