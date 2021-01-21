@@ -30,7 +30,6 @@ along with this program; see the file COPYING. If not, see
  **/
 int
 main_cd(int argc, char **argv) {
-  struct stat statbuf;
   char *old = strdup(getenv("PWD"));
   char *new = NULL;
   
@@ -49,16 +48,13 @@ main_cd(int argc, char **argv) {
   }
 
   new = abspath(new);
-
-  if(stat(new, &statbuf) != 0) {
-    perror(new);
-    
-  } else if (S_ISDIR(statbuf.st_mode)) {
+  
+  if(!chdir(new)) {
     setenv("PWD", new, 1);
     setenv("OLDPWD", old, 1);
     
   } else {
-    fprintf(stderr, "%s: Not a directory\n", new);
+    perror(new);
   }
   
   free(old);
