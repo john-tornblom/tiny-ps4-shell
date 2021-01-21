@@ -14,8 +14,13 @@ You should have received a copy of the GNU General Public License
 along with this program; see the file COPYING. If not, see
 <http://www.gnu.org/licenses/>.  */
 
+#include <errno.h>
+#include <stdio.h>
 #include <unistd.h>
+#include <stdlib.h>
+#include <limits.h>
 
+#include "sys.h"
 #include "kern_orbis.h"
 
 
@@ -24,12 +29,18 @@ along with this program; see the file COPYING. If not, see
  **/
 int
 main_jailbreak(int argc, char **argv) {
-
+  char cwd[PATH_MAX];
+  
 #ifdef __ORBIS__
   app_jailbreak();
 #endif
 
-  seteuid(0);
+  setenv("OLDPWD", getenv("PWD"), 1);
+  setenv("PWD", sys_getcwd(cwd, sizeof cwd), 1);
+  
+  if(seteuid(0)) {
+    perror("seteuid");
+  }
   
   return 0;
 }
