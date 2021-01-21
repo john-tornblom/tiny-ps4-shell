@@ -34,7 +34,6 @@ along with this program; see the file COPYING. If not, see
 
 #define SYS_kexec 11
 
-#define X86_CR0_WP (1 << 16)
 
 static inline __attribute__((always_inline))
 uint64_t read_msr(uint32_t reg) {
