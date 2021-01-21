@@ -22,7 +22,7 @@ along with this program; see the file COPYING. If not, see
 #include <signal.h>
 #include <stdlib.h>
 #include <ctype.h>
-
+#include <unistd.h>
 
 /**
  * 
@@ -30,15 +30,25 @@ along with this program; see the file COPYING. If not, see
 int
 main_kill(int argc, char **argv) {
   pid_t pid;
+  int sig = SIGTERM;
+  int c;
   
-  if(argc <= 1 || !isdigit(argv[1][0])) {
-    printf("usage: %s pid\n", argv[0]);
-    return -1;
+while ((c = getopt(argc, argv, "s:")) != -1) {
+    switch (c) {
+    case 's':
+      sig = atoi(optarg);
+      break;
+    }
   }
 
-  pid = atoi(argv[1]);
+ if(optind >= argc || !isdigit(argv[optind][0])) {
+   printf("usage: %s [-s signum] <pid>\n", argv[0]);
+   return EXIT_FAILURE;
+ }
+
+  pid = atoi(argv[optind]);
   
-  if(kill(pid, SIGTERM)) {
+  if(kill(pid, sig)) {
     perror(argv[0]);
     return -1;
   }
