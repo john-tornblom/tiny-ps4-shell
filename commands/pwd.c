@@ -18,6 +18,7 @@ along with this program; see the file COPYING. If not, see
 #include <stdio.h>
 #include <limits.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 #include "sys.h"
 
@@ -29,11 +30,12 @@ main_pwd(int argc, char **argv) {
 
   if(!sys_getcwd(pwd, sizeof pwd)) {
     perror(argv[0]);
+    return EXIT_FAILURE;
   } else {
     printf("%s\n", pwd);
   }
-  
-  return 0;
+
+  return EXIT_SUCCESS;
 }
 
 
