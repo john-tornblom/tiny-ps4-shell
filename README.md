@@ -19,12 +19,11 @@ john@localhost:tiny-ps4-shell$ ./main_term.bin
 
 ## Usage
 Install the compiled pkg on a PS4 with homebrew and the kexec syscall enabled,
-launch the application, and telnet to the PS4 (port 2323).
+launch the application, and telnet to the PS4 (port 2323). There are a handful
+of rudimentary commands available, e.g., cd, ls, and mkdir. Type `help` in a
+connected telnet shell for more information. Below are a couple of commands I
+have found useful.
 
-To escape the initial jailed sandbox:
-```console
-/$ jailbreak
-```
 
 To obtain root permissions:
 ```console
@@ -33,7 +32,6 @@ To obtain root permissions:
 
 To mount procfs and get list of processes:
 ```console
-/$ seteuid 0
 /$ mkdir proc
 /$ mount -t procfs proc /proc
 /$ ps
@@ -43,8 +41,26 @@ To mount procfs and get list of processes:
 ...
 ```
 
-There are a handful of rudimentary commands available, e.g., cd, ls, and mkdir.
-Type `help` in a connected telnet shell for more information.
+To escape the initial jailed sandbox:
+```console
+/$ jailbreak
+```
+
+To monitor kernel log:
+```console
+/$ cat /dev/klog
+```
+
+To decrypt SELF and SPRX files:
+```console
+/$  self2elf /mini-syscore.elf /mnt/usb0/mini-syscore.el
+```
+
+## Limitations
+The login session is not attached to a TTY, so you cannot signal for, e.g., SIGINT
+with Ctrl+C. Furthermore, most of the commands are only partially implemneted.
+If you find some limitation extra anoying, file a github issue and perhaps it will
+be addressed.
 
 ## Reporting Bugs
 If you encounter problems with tiny-ps4-shell, please [file a github issue][issues].
