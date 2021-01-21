@@ -16,20 +16,22 @@ along with this program; see the file COPYING. If not, see
 
 #include <errno.h>
 #include <stdio.h>
-#include <string.h>
-#include <unistd.h>
 #include <limits.h>
 #include <stdlib.h>
 
-#include "_common.h"
+#include "sys.h"
 
 
-/**
- *
- **/
 int
 main_pwd(int argc, char **argv) {
-  printf("%s\n", get_workdir());
+  char pwd[PATH_MAX];
+  pwd[0] = 0;
+
+  if(!sys_getcwd(pwd, sizeof pwd)) {
+    perror(argv[0]);
+  } else {
+    printf("%s\n", pwd);
+  }
   
   return 0;
 }

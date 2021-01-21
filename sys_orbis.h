@@ -28,7 +28,7 @@ pid_t sys_waitpid(pid_t pid, int *wstatus, int options);
 int sys_dup(int oldfd);
 int sys_dup2(int oldfd, int newfd);
 int sys_pipe(int pipefd[2]);
-
+char* sys_getcwd(char *buf, size_t size);
 int sys_getfsstat(struct statfs *buf, long bufsize, int mode);
 
 void sys_notify(const char *fmt, ...);

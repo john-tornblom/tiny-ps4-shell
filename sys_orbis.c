@@ -47,6 +47,21 @@ sys_notify(const char *fmt, ...) {
 
 
 /**
+ * The PS4 port of musl does not use the SYS_getcwd syscall
+ * correctly, accommodate for that here.
+ **/
+char*
+sys_getcwd(char *buf, size_t size) {
+#define SYS_getcwd 326
+  
+  if(syscall(SYS_getcwd, buf, size)) {
+    return NULL;
+  }
+  return buf;
+}
+
+
+/**
  * The fork syscall needs additional application attributes.
  **/
 pid_t

@@ -23,6 +23,7 @@ along with this program; see the file COPYING. If not, see
 #define sys_dup(...) dup(__VA_ARGS__)
 #define sys_dup2(...) dup2(__VA_ARGS__)
 #define sys_pipe(...) pipe(__VA_ARGS__)
+#define sys_getcwd(...) getcwd(__VA_ARGS__)
 #define sys_getfsstat(...) (-1)
 
 void sys_notify(const char *fmt, ...);
