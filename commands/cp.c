@@ -61,7 +61,7 @@ copy_file(const char* src, const char *dst) {
   close(srcfd);
   close(dstfd);
 
-  return 0;
+  return rc;
 }
 
 
