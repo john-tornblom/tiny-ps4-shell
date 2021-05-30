@@ -25,20 +25,18 @@ connected telnet shell for more information. Below are a couple of commands I
 have found useful.
 
 
-To obtain root permissions:
+To get a list of running processes:
 ```console
-/$ seteuid 0
-```
-
-To mount procfs and get list of processes:
-```console
-/$ mkdir /proc
-/$ mount -t procfs proc /proc
 /$ ps
      PID      PPID     PGID      SID    TTY    COMMAND
        0         0        0        0      -    kernel
        1         0        1        1  ttyu0    mini-syscore.elf
 ...
+```
+
+To obtain root permissions:
+```console
+/$ seteuid 0
 ```
 
 To escape the initial jailed sandbox:

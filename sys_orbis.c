@@ -21,6 +21,7 @@ along with this program; see the file COPYING. If not, see
 #include <string.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <sys/stat.h>
 #include <sys/wait.h>
 #include <orbis/SysUtil.h>
 
@@ -88,6 +89,13 @@ static void on_SIGSTOP(int sig) {
 
 
 /**
+ * The mount() function in OpenOrbis libc does not work, use the command mount
+ * instead to mount /proc
+ */
+int main_mount(int, char**);
+
+
+/**
  * Create a new session so we are not attached to PS4 system services.
  * This ensures kill -1 does not terminate vital services when acting as uid 0.
  * Also, obtain our process group id so we can signal TERM to child processes
@@ -104,5 +112,10 @@ sys_init(void) {
   setsid();
   pgid = getpgrp();
   signal(17, on_SIGSTOP);
+
+  seteuid(0);
+  mkdir("/proc", 0555);
+  main_mount(5, (char*[6]){"mount", "-t", "procfs", "proc", "/proc"});
+  seteuid(1);
 }
 
