@@ -51,6 +51,9 @@ along with this program; see the file COPYING. If not, see
 #define K671_XFAST_SYSCALL         0x000001C0
 #define K672_XFAST_SYSCALL         0x000001C0
 #define K700_XFAST_SYSCALL         0x000001C0
+#define K750_XFAST_SYSCALL         0x000001C0
+#define K751_XFAST_SYSCALL         0x000001C0
+#define K755_XFAST_SYSCALL         0x000001C0
 
 #define K350_PRISON_0              0x00EF5A00
 #define K355_PRISON_0              0x00EF5A00
@@ -85,6 +88,9 @@ along with this program; see the file COPYING. If not, see
 #define K671_PRISON_0              0x0113E518
 #define K672_PRISON_0              0x0113E518
 #define K700_PRISON_0              0x0113E398
+#define K750_PRISON_0              0x0113B728
+#define K751_PRISON_0              0x0113B728
+#define K755_PRISON_0              0x0113B728
 
 #define K350_ROOTVNODE             0x01963000
 #define K355_ROOTVNODE             0x01963040
@@ -119,6 +125,9 @@ along with this program; see the file COPYING. If not, see
 #define K671_ROOTVNODE             0x02300320
 #define K672_ROOTVNODE             0x02300320
 #define K700_ROOTVNODE             0x022C5750
+#define K750_ROOTVNODE             0x01B463E0
+#define K751_ROOTVNODE             0x01B463E0
+#define K755_ROOTVNODE             0x01B463E0
 
 #define K350_COPYIN                0x003B92A0
 #define K355_COPYIN                0x003B96E0
@@ -153,6 +162,9 @@ along with this program; see the file COPYING. If not, see
 #define K671_COPYIN                0x003C17A0
 #define K672_COPYIN                0x003C17A0
 #define K700_COPYIN                0x0002F230
+#define K750_COPYIN                0x0028F9F0
+#define K751_COPYIN                0x0028F9F0
+#define K755_COPYIN                0x0028F9F0
 
 #define K350_COPYOUT               0x003B9220
 #define K355_COPYOUT               0x003B9660
@@ -187,6 +199,9 @@ along with this program; see the file COPYING. If not, see
 #define K671_COPYOUT               0x003C16B0
 #define K672_COPYOUT               0x003C16B0
 #define K700_COPYOUT               0x0002F140
+#define K750_COPYOUT               0x0028F900
+#define K751_COPYOUT               0x0028F900
+#define K755_COPYOUT               0x0028F900
 
 #define K300_MMAP_SELF_1           0x0
 #define K310_MMAP_SELF_1           0x0
@@ -225,6 +240,9 @@ along with this program; see the file COPYING. If not, see
 #define K671_MMAP_SELF_1           0x00233C40
 #define K672_MMAP_SELF_1           0x00233C40
 #define K700_MMAP_SELF_1           0x001CB8F0
+#define K750_MMAP_SELF_1           0x00364D40
+#define K751_MMAP_SELF_1           0x00364D40
+#define K755_MMAP_SELF_1           0x00364D40
 
 #define K300_MMAP_SELF_2           0x0
 #define K310_MMAP_SELF_2           0x0
@@ -263,6 +281,9 @@ along with this program; see the file COPYING. If not, see
 #define K671_MMAP_SELF_2           0x00233C50
 #define K672_MMAP_SELF_2           0x00233C50
 #define K700_MMAP_SELF_2           0x001CB910
+#define K750_MMAP_SELF_2           0x00364D60
+#define K751_MMAP_SELF_2           0x00364D60
+#define K755_MMAP_SELF_2           0x00364D60
 
 #define K300_MMAP_SELF_3           0x0
 #define K310_MMAP_SELF_3           0x0
@@ -301,6 +322,9 @@ along with this program; see the file COPYING. If not, see
 #define K671_MMAP_SELF_3           0x000AD2E4
 #define K672_MMAP_SELF_3           0x000AD2E4
 #define K700_MMAP_SELF_3           0x001D40BB
+#define K750_MMAP_SELF_3           0x000DCED1
+#define K751_MMAP_SELF_3           0x000DCED1
+#define K755_MMAP_SELF_3           0x000DCED1
 
 
 struct kexec_ctx {
