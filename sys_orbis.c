@@ -113,9 +113,11 @@ sys_init(void) {
   pgid = getpgrp();
   signal(17, on_SIGSTOP);
 
+  /*
   seteuid(0);
   mkdir("/proc", 0555);
   main_mount(5, (char*[6]){"mount", "-t", "procfs", "proc", "/proc"});
   seteuid(1);
+  */
 }
 
