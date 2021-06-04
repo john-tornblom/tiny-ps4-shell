@@ -41,7 +41,7 @@ sys_notify(const char *fmt, ...) {
   vsnprintf(str, sizeof(str), fmt, args);
   va_end(args);
 
-  sceSysUtilSendSystemNotificationWithText(222, str);
+  //sceSysUtilSendSystemNotificationWithText(222, str);
 }
 
 
