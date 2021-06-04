@@ -14,14 +14,18 @@
 # along with this program; see the file COPYING. If not see
 # <http://www.gnu.org/licenses/>.
 
-TITLE      := Tiny Shell
+TITLE      := Telnet Shell
 VERSION    := 1.00
-TITLE_ID   := BREW00007
-CONTENT_ID := IV0000-$(TITLE_ID)_00-TINYSHELL0000000
-LIBS       := -lkernel -lc -lSceLibcInternal -lSceSysUtil
-PKG_FILES  := sce_sys/icon0.png sce_sys/param.sfo \
-              sce_module/libc.prx sce_module/libSceFios2.prx \
-              eboot.bin
+TITLE_ID   := BREW00009
+CONTENT_ID := IV0000-$(TITLE_ID)_00-TELNETSHELL00000
+
+INSTALL_LIBS := -lkernel -lc -lSceLibcInternal -lSceSysUtil
+DAEMON_LIBS  := -lkernel -lc # daemon will not start when linked to sce libs
+
+PKG_FILES := daemon.bin daemon.sfo \
+	     icon0.png install.bin install.sfo \
+	     libc.prx libSceFios2.prx
+
 
 COMMANDS := $(wildcard commands/*.c)
 COMMANDS := $(COMMANDS:.c=.o)
@@ -45,21 +49,17 @@ endif
 
 CFLAGS := -target x86_64-scei-ps4-elf -funwind-tables \
           -fuse-init-array -isysroot $(OO_PS4_TOOLCHAIN) \
-	  -isystem $(OO_PS4_TOOLCHAIN)/include -I. -Wall
-
+	  -isystem $(OO_PS4_TOOLCHAIN)/include -I. -Wall \
+	  -DTITLE_ID='"$(TITLE_ID)"'
 
 all: $(CONTENT_ID).pkg
 
 
-$(CONTENT_ID).pkg: $(CONTENT_ID).gp4
+$(CONTENT_ID).pkg: install.gp4 $(PKG_FILES)
 	PkgTool.Core pkg_build $< .
 
 
-$(CONTENT_ID).gp4: $(PKG_FILES)
-	create-gp4 -content-id=$(CONTENT_ID) -files='$^' -out=$@
-
-
-sce_sys/param.sfo: Makefile
+install.sfo:
 	PkgTool.Core sfo_new $@
 	PkgTool.Core sfo_setentry $@ APP_TYPE --type Integer --maxsize 4 --value 1
 	PkgTool.Core sfo_setentry $@ APP_VER --type Utf8 --maxsize 8 --value '$(VERSION)'
@@ -73,37 +73,56 @@ sce_sys/param.sfo: Makefile
 	PkgTool.Core sfo_setentry $@ VERSION --type Utf8 --maxsize 8 --value '$(VERSION)'
 
 
-sce_sys/icon0.png: sce_sys Makefile
+daemon.sfo:
+	PkgTool.Core sfo_new $@
+	PkgTool.Core sfo_setentry $@ APP_TYPE --type Integer --maxsize 4 --value 0
+	PkgTool.Core sfo_setentry $@ APP_VER --type Utf8 --maxsize 8 --value ''
+	PkgTool.Core sfo_setentry $@ ATTRIBUTE --type Integer --maxsize 4 --value 0
+	PkgTool.Core sfo_setentry $@ CATEGORY --type Utf8 --maxsize 4 --value 'gdd'
+	PkgTool.Core sfo_setentry $@ CONTENT_ID --type Utf8 --maxsize 48 --value ''
+	PkgTool.Core sfo_setentry $@ DOWNLOAD_DATA_SIZE --type Integer --maxsize 4 --value 0
+	PkgTool.Core sfo_setentry $@ FORMAT --type Utf8 --maxsize 4 --value 'ngh'
+	PkgTool.Core sfo_setentry $@ TITLE --type Utf8 --maxsize 128 --value '$(TITLE)'
+	PkgTool.Core sfo_setentry $@ TITLE_ID --type Utf8 --maxsize 12 --value '$(TITLE_ID)'
+	PkgTool.Core sfo_setentry $@ VERSION --type Utf8 --maxsize 8 --value '$(VERSION)'
+
+
+icon0.png:
 	convert -size 512x512 -gravity center label:'$(TITLE)' $@
 
 
-sce_sys:
-	mkdir $@
+%.bin: %.elf
+	create-eboot -in=$< --paid 0x3800000000000010
+	mv eboot.bin $*.bin
 
 
-sce_module:
-	mkdir sce_module
-
-
-sce_module/%.prx: sce_module
-	cp $(OO_PS4_TOOLCHAIN)/bin/data/modules/$(@F) $@
-
-
-eboot.bin: eboot.elf
-	create-eboot -in=$< -out=eboot.oelf
-
-
-eboot.elf: $(COMMANDS) main_server.o shell.o sys_orbis.o kern_orbis.o
+install.elf: main_install.o kern_orbis.o
 	$(LD) -o $@ -m elf_x86_64 -pie --eh-frame-hdr \
 	       --script $(OO_PS4_TOOLCHAIN)/link.x \
                $(OO_PS4_TOOLCHAIN)/lib/crt1.o \
 	       $(OO_PS4_TOOLCHAIN)/lib/crti.o \
 	       -L$(OO_PS4_TOOLCHAIN)/lib \
-	       $^ $(LIBS) \
+	       $^ $(INSTALL_LIBS) \
 	       $(OO_PS4_TOOLCHAIN)/lib/crtn.o
 
+
+daemon.elf: $(COMMANDS) main_server.o kern_orbis.o shell.o sys_orbis.o
+	$(LD) -o $@ -m elf_x86_64 -pie --eh-frame-hdr \
+	       --script $(OO_PS4_TOOLCHAIN)/link.x \
+               $(OO_PS4_TOOLCHAIN)/lib/crt1.o \
+	       $(OO_PS4_TOOLCHAIN)/lib/crti.o \
+	       -L$(OO_PS4_TOOLCHAIN)/lib \
+	       $^ $(DAEMON_LIBS) \
+	       $(OO_PS4_TOOLCHAIN)/lib/crtn.o
+
+
+%.prx:
+	cp $(OO_PS4_TOOLCHAIN)/bin/data/modules/$(@F) $@
+
+
+.INTERMEDIATE: install.sfo icon0.png daemon.sfo libc.prx libSceFios2.prx
+
 clean:
-	rm -f eboot.elf eboot.oelf \
-              $(COMMANDS) *.o \
-              $(PKG_FILES) $(CONTENT_ID).gp4 $(CONTENT_ID).pkg
-	rmdir sce_sys sce_module
+	rm -f install.bin install.elf install.sfo install.png \
+	      daemon.bin daemon.elf daemon.sfo \
+              $(CONTENT_ID).pkg *.o
