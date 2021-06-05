@@ -23,10 +23,16 @@ along with this program; see the file COPYING. If not, see
 #include <stdlib.h>
 #include <sys/stat.h>
 #include <sys/wait.h>
-#include <orbis/SysUtil.h>
+#include <orbis/libkernel.h>
 
 #include "kern_orbis.h"
 #include "sys.h"
+
+
+typedef struct notify_request {
+  char useless1[45];
+  char message[3075];
+} notify_request_t;
 
 
 /**
@@ -34,14 +40,15 @@ along with this program; see the file COPYING. If not, see
  **/
 void
 sys_notify(const char *fmt, ...) {
+  notify_request_t req;
   va_list args;
-  char str[1024];
-    
+
+  bzero(&req, sizeof req);
   va_start(args, fmt);
-  vsnprintf(str, sizeof(str), fmt, args);
+  vsnprintf(req.message, sizeof req.message, fmt, args);
   va_end(args);
 
-  //sceSysUtilSendSystemNotificationWithText(222, str);
+  sceKernelSendNotificationRequest(0, &req, sizeof req, 0);
 }
 
 
