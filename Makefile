@@ -126,3 +126,12 @@ clean:
 	rm -f install.bin install.elf install.sfo install.png \
 	      daemon.bin daemon.elf daemon.sfo \
               $(CONTENT_ID).pkg $(COMMANDS) *.o
+
+
+deploy: daemon.bin
+	@if [ -z "$(PS4_HOST)" ]; then\
+		echo "PS4_HOST is undefined";\
+	else\
+		curl -T daemon.bin ftp://$(PS4_HOST)/system/vsh/app/$(TITLE_ID)/eboot.bin; \
+	fi
+
