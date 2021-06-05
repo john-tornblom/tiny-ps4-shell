@@ -24,6 +24,15 @@ along with this program; see the file COPYING. If not, see
 #include <ctype.h>
 #include <unistd.h>
 
+
+static int
+isnumber(const char* s) {
+  char buf[6];
+  snprintf(buf, sizeof buf, "%d", atoi(s));
+  return strncmp(buf, s, sizeof buf) == 0;
+}
+
+
 /**
  * 
  **/
@@ -41,7 +50,7 @@ while ((c = getopt(argc, argv, "s:")) != -1) {
     }
   }
 
- if(optind >= argc || !isdigit(argv[optind][0])) {
+ if(optind >= argc || !isnumber(argv[optind])) {
    printf("usage: %s [-s signum] <pid>\n", argv[0]);
    return EXIT_FAILURE;
  }
