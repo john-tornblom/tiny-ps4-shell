@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<psproject xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   fmt="gp4" version="1000">
+  <volume>
+    <volume_type>pkg_ps4_app</volume_type>
+    <volume_ts>2021-06-04 00:08:31</volume_ts>
+    <package content_id="IV0000-BREW00009_00-TELNETSHELL00000"
+	     passcode="00000000000000000000000000000000"
+	     storage_type="digital50" app_type="full" />
+    <chunk_info chunk_count="1" scenario_count="1">
+      <chunks>
+        <chunk id="0" layer_no="0" label="Chunk #0" />
+      </chunks>
+      <scenarios default_id="0">
+        <scenario id="0" type="sp" initial_chunk_count="1"
+		  label="Scenario #0">0</scenario>
+      </scenarios>
+    </chunk_info>
+  </volume>
+  <files img_no="0">
+    <file orig_path="daemon.bin"      targ_path="daemon/eboot.bin"/>
+    <file orig_path="daemon.sfo"      targ_path="daemon/param"/> <!-- pkg won't install with the sfo suffix -->
+    <file orig_path="icon0.png"       targ_path="sce_sys/icon0.png"/>
+    <file orig_path="install.bin"     targ_path="eboot.bin"/>
+    <file orig_path="install.sfo"     targ_path="sce_sys/param.sfo"/>
+    <file orig_path="libc.prx"        targ_path="sce_module/libc.prx" />
+    <file orig_path="libSceFios2.prx" targ_path="sce_module/libSceFios2.prx" />
+  </files>
+  <rootdir>
+    <dir targ_name="daemon" />
+    <dir targ_name="sce_module" />
+    <dir targ_name="sce_sys" />
+  </rootdir>
+</psproject>
+
+

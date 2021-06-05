@@ -2,7 +2,6 @@
 *.o
 *.bin
 *.pkg
-*.gp4
 *.elf
 *.oelf
 sce_sys
