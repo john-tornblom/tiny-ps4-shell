@@ -26,6 +26,7 @@ along with this program; see the file COPYING. If not, see
 #include <unistd.h>
 #include <strings.h>
 #include <signal.h>
+#include <fcntl.h>
 
 #include "sys.h"
 #include "shell.h"
@@ -46,7 +47,7 @@ along with this program; see the file COPYING. If not, see
 static int
 client_init(int fd) {
   for(int i=0; i<1024; i++) {
-    if(i != fd) {
+    if(i != fd && fcntl(i, F_GETFD) > 0 && errno != EBADF) {
       close(i);
     }
   }
@@ -78,7 +79,7 @@ client_fork(int master, int slave) {
   if (pid == 0) {
     close(master);
     if(client_init(slave)) {
-      sys_notify("init: %s", strerror(errno));
+      dprintf(slave, "init: %s", strerror(errno));
     } else {
       shell_loop();
     }

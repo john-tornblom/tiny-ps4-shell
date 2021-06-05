@@ -92,7 +92,7 @@ icon0.png:
 
 
 %.bin: %.elf
-	create-eboot -in=$< --paid 0x3800000000000010
+	create-eboot -in=$<
 	mv eboot.bin $*.bin
 
 
