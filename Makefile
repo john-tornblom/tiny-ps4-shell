@@ -125,4 +125,4 @@ daemon.elf: $(COMMANDS) main_server.o kern_orbis.o shell.o sys_orbis.o
 clean:
 	rm -f install.bin install.elf install.sfo install.png \
 	      daemon.bin daemon.elf daemon.sfo \
-              $(CONTENT_ID).pkg *.o
+              $(CONTENT_ID).pkg $(COMMANDS) *.o
