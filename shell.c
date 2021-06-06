@@ -204,6 +204,7 @@ static int
 shell_fork(main_t *main, int argc, char **argv) {
   pid_t pid = fork();  
   if (pid == 0) {
+    sys_setprocname(argv[0]);
     int rc = main(argc, argv);
     _exit(rc);
     return rc;
@@ -285,6 +286,7 @@ shell_loop(void) {
   setenv("HOME", "/", 0);
   setenv("PWD", "/", 0);
   
+  sys_setprocname(TITLE_ID "(shell)");
 
   while(running) {
     shell_prompt();

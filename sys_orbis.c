@@ -67,6 +67,12 @@ sys_getcwd(char *buf, size_t size) {
 }
 
 
+void
+sys_setprocname(const char* name) {
+  sceKernelSetProcessName(name);
+}
+
+
 /**
  * Avoid recurive signals.
  **/

@@ -20,6 +20,7 @@ along with this program; see the file COPYING. If not, see
 #define sys_getcwd(...) getcwd(__VA_ARGS__)
 
 void sys_notify(const char *fmt, ...);
+void sys_setprocname(const char* name);
 
 
 

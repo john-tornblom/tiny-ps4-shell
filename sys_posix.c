@@ -16,6 +16,7 @@ along with this program; see the file COPYING. If not, see
 
 #include <stdarg.h>
 #include <stdio.h>
+#include <sys/prctl.h>
 
 
 /**
@@ -33,4 +34,12 @@ sys_notify(const char *fmt, ...) {
   printf("notify: %s\n", str);
 }
 
+
+
+void
+sys_setprocname(const char* name) {
+  if(prctl(PR_SET_NAME, name, 0, 0, 0)) {
+    perror("prctl");
+  }
+}
 

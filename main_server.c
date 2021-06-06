@@ -147,7 +147,8 @@ int
 main(void) {
   const int port = 2323;
   sys_notify("Serving telnet on port %d", port);
-  
+
+  sys_setprocname(TITLE_ID "(server)");
   signal(SIGCHLD, SIG_IGN);
   sys_init();
   serve_telnet(port);

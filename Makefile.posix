@@ -20,7 +20,7 @@ COMMANDS := $(COMMANDS:.c=.o)
 CC ?= gcc
 LD ?= ld
 
-CFLAGS  := -I.
+CFLAGS  := -I. -DTITLE_ID='"BREW0009"'
 LDFLAGS := -lpthread
 
 all: main_server.bin main_term.bin
