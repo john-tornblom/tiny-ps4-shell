@@ -1,99 +1,43 @@
-#include <sys/stat.h>
-#include <unistd.h>
 #include <stdio.h>
-#include <stdlib.h>
-#include <errno.h>
-#include <string.h>
-#include <limits.h>
-#include <dirent.h>
-#include <ctype.h>
+#include <stdint.h>
+#include <sys/types.h>
+#include <sys/time.h>
+#include <unistd.h>
 
 
-typedef struct proc_status {
-  char *cmd;
-  pid_t pid;
-  pid_t ppid;
-  pid_t pgid;
-  pid_t sid;
-  char *tty;
-} proc_status_t;
+struct kinfo_proc {
+  char junk0[0x48];
+  pid_t	pid;
+  pid_t	ppid;
+  pid_t	pgid;
+  pid_t	tpgid;
+  pid_t	sid;
+  char junk1[0x163];
+  char name[19];
+};
 
 
-static char*
-next_col(char **ptr) {
-  char *p = *ptr;
-  char *d = strstr(p, " ");
-  if(d) {
-    *d = 0;
-    *ptr = d + 1;
-  } else {
-    *ptr = 0;
-  }
-  
-  return p;
-}
-
-
-static int
-digitsort(const struct dirent **a, const struct dirent **b) {
-  return atoi((*a)->d_name) - atoi((*b)->d_name);
-}
-
-
-static void
-parse_proc_status(char *status, proc_status_t *ps) {
-  char *ptr = status;
-  
-  ps->cmd = next_col(&ptr);
-  ps->pid = atoi(next_col(&ptr));
-  ps->ppid = atoi(next_col(&ptr));
-  ps->pgid = atoi(next_col(&ptr));
-  ps->sid = atoi(next_col(&ptr));
-  ps->tty = next_col(&ptr);
-}
+int sysctl(const int *name, u_int namelen, void *oldp,	size_t *oldlenp,
+	   const void *newp, size_t newlen);
 
 
 int
 main_ps(int argc, char** argv) {
-  struct dirent **namelist;
-  struct stat statbuf;
-  char path[PATH_MAX];
-  char buf[1000];
-  proc_status_t ps;
-  FILE *fp;
-  int n;
 
-  if ((n = scandir("/proc", &namelist, NULL, digitsort)) < 0) {
-    perror(argv[0]);
-    return -1;
-  }
-  
-  printf("     PID      PPID     PGID      SID    TTY    COMMAND\n");
+  int i, mib[4] = {1, 14, 1, 0};
+  size_t len;
+  char buf[10000];
 
-  for(int i=0; i<n; i++) {
-    if(!isdigit(namelist[i]->d_name[0])) {
-      continue;
-    }
-    
-    snprintf(path, sizeof(path), "/proc/%s/status", namelist[i]->d_name);
-    if(stat(path, &statbuf) != 0) {
-      perror(path);
-      continue;
-    }
-    
-    if(!(fp = fopen(path, "r"))) {
-      perror(path);
-      continue;
-    }
 
-    if(fread(buf, sizeof(char), sizeof(buf), fp) <= 0) {
-      perror(path);
-      continue;
+  printf("     PID      PPID     PGID      SID   COMMAND\n");
+  for(i=0; i<=getpid(); i++) {
+    len = sizeof buf;
+    mib[3] = i;
+    if (sysctl(mib, 4, buf, &len, NULL, 0) != -1) {
+      struct kinfo_proc *kp = (struct kinfo_proc*)buf;
+      printf("%8u  %8u %8u %8u   %s\n",
+	     kp->pid, kp->ppid, kp->pgid, kp->sid, kp->name);
     }
-    
-    parse_proc_status(buf, &ps);
-    printf("%8d  %8d %8d %8d %6s    %s\n",
-	   ps.pid, ps.ppid, ps.pgid, ps.sid, ps.tty, ps.cmd);  
   }
   
   return 0;
