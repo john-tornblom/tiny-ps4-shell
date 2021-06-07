@@ -29,7 +29,7 @@ main_ps(int argc, char** argv) {
   char buf[10000];
 
 
-  printf("     PID      PPID     PGID      SID   COMMAND\n");
+  printf("     PID      PPID     PGID      SID   Name\n");
   for(i=0; i<=getpid(); i++) {
     len = sizeof buf;
     mib[3] = i;
