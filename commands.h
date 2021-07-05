@@ -35,6 +35,7 @@ int main_kill(int argc, char **argv);
 int main_ln(int argc, char **argv);
 int main_ls(int argc, char **argv);
 int main_mkdir(int argc, char **argv);
+int main_mknod(int argc, char **argv);
 int main_mount(int argc, char **argv);
 int main_notify(int argc, char **argv);
 int main_ps(int argc, char** argv);

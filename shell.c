@@ -75,6 +75,7 @@ shell_command_t commands[] = {
   {"ln", main_ln, 1},
   {"ls", main_ls, 1},
   {"mkdir", main_mkdir, 1},
+  {"mknod", main_mknod, 1},
   {"mount", main_mount, 1},
   {"notify", main_notify, 1},
   {"ps", main_ps, 1},
