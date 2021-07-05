@@ -67,6 +67,7 @@ shell_command_t commands[] = {
   {"env", main_env, 0},
   {"exec", main_exec, 0},
   {"exit", main_exit, 0},
+  {"grep", main_grep, 1},
   {"help", main_help, 1},
   {"hexdump", main_hexdump, 1},
   {"id", main_id, 1},
