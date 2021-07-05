@@ -30,6 +30,7 @@ int main_hexdump(int argc, char **argv);
 int main_id(int argc, char **argv);
 int main_jailbreak(int argc, char **argv);
 int main_kill(int argc, char **argv);
+int main_ln(int argc, char **argv);
 int main_ls(int argc, char **argv);
 int main_mkdir(int argc, char **argv);
 int main_mount(int argc, char **argv);

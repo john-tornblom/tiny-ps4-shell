@@ -70,6 +70,7 @@ shell_command_t commands[] = {
   {"id", main_id, 1},
   {"jailbreak", main_jailbreak, 0},
   {"kill", main_kill, 1},
+  {"ln", main_ln, 1},
   {"ls", main_ls, 1},
   {"mkdir", main_mkdir, 1},
   {"mount", main_mount, 1},
