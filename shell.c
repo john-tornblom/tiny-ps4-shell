@@ -59,6 +59,7 @@ shell_command_t commands[] = {
   {"cd", main_cd, 0},
   {"chgrp", main_chgrp, 1},
   {"chmod", main_chmod, 1},
+  {"chown", main_chown, 1},
   {"chroot", main_chroot, 0},
   {"cmp", main_cmp, 1},
   {"cp", main_cp, 1},
