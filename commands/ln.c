@@ -14,7 +14,7 @@ You should have received a copy of the GNU General Public License
 along with this program; see the file COPYING. If not, see
 <http://www.gnu.org/licenses/>.  */
 
-// Code inspired by https://github.com/landley/toybox
+// Code inspired by http://members.tip.net.au/%7Edbell/programs/sash-3.8.tar.gz
 
 #include <dirent.h>
 #include <stdlib.h>
