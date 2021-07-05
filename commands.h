@@ -23,7 +23,6 @@ int main_chmod(int argc, char **argv);
 int main_chroot(int argc, char **argv);
 int main_cmp(int argc, char **argv);
 int main_cp(int argc, char **argv);
-int main_dmesg(int argc, char **argv);
 int main_env(int argc, char **argv);
 int main_exit(int argc, char **argv);
 int main_echo(int argc, char **argv);

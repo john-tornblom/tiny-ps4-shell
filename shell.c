@@ -62,7 +62,6 @@ shell_command_t commands[] = {
   {"chroot", main_chroot, 0},
   {"cmp", main_cmp, 1},
   {"cp", main_cp, 1},
-  {"dmesg", main_dmesg, 1},
   {"echo", main_echo, 1},
   {"env", main_env, 0},
   {"exit", main_exit, 0},
