@@ -64,6 +64,7 @@ shell_command_t commands[] = {
   {"cp", main_cp, 1},
   {"echo", main_echo, 1},
   {"env", main_env, 0},
+  {"exec", main_exec, 0},
   {"exit", main_exit, 0},
   {"help", main_help, 1},
   {"hexdump", main_hexdump, 1},
