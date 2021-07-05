@@ -89,6 +89,7 @@ shell_command_t commands[] = {
   {"sfoinfo", main_sfoinfo, 1},
   {"sleep", main_sleep, 1},
   {"stat", main_stat, 1},
+  //  {"sync", main_sync, 1},
   {"sysctl", main_sysctl, 1},
   {"umount", main_umount, 1},
   {"uname", main_uname, 1},
