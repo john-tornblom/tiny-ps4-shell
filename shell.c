@@ -57,9 +57,10 @@ static int main_help(int argc, char **argv);
 shell_command_t commands[] = {
   {"cat", main_cat, 1},
   {"cd", main_cd, 0},
-  {"chgrp", main_chgrp, 0},
-  {"chmod", main_chmod, 0},
+  {"chgrp", main_chgrp, 1},
+  {"chmod", main_chmod, 1},
   {"chroot", main_chroot, 0},
+  {"cmp", main_cmp, 1},
   {"cp", main_cp, 1},
   {"dmesg", main_dmesg, 1},
   {"echo", main_echo, 1},
