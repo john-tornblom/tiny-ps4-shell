@@ -84,6 +84,7 @@ shell_command_t commands[] = {
   {"notify", main_notify, 1},
   {"ps", main_ps, 1},
   {"pwd", main_pwd, 1},
+  {"rm", main_rm, 1},
   {"rmdir", main_rmdir, 1},
   {"self2elf", main_self2elf, 1},
   {"setegid", main_setegid, 0},

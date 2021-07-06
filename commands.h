@@ -44,6 +44,7 @@ int main_mv(int argc, char **argv);
 int main_notify(int argc, char **argv);
 int main_ps(int argc, char** argv);
 int main_pwd(int argc, char **argv);
+int main_rm(int argc, char **argv);
 int main_rmdir(int argc, char **argv);
 int main_self2elf(int argc, char **argv);
 int main_setegid(int argc, char **argv);
