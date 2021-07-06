@@ -80,6 +80,7 @@ shell_command_t commands[] = {
   {"mkdir", main_mkdir, 1},
   {"mknod", main_mknod, 1},
   {"mount", main_mount, 1},
+  {"mv", main_mv, 1},
   {"notify", main_notify, 1},
   {"ps", main_ps, 1},
   {"pwd", main_pwd, 1},
