@@ -17,12 +17,16 @@ john@localhost:tiny-ps4-shell$ make -f Makefile.posix
 john@localhost:tiny-ps4-shell$ ./main_term.bin
 ```
 
+## Installation
+Install the compiled pkg on a PS4 with homebrew and the kexec syscall enabled.
+Next, launch the application to install the telnet daemon. When you get the
+notification "Install successful", terminate the app, and restart it again to
+launch the installed daemon. Yoy may now telnet to the PS4 (port 2323).
+
 ## Usage
-Install the compiled pkg on a PS4 with homebrew and the kexec syscall enabled,
-launch the application, and telnet to the PS4 (port 2323). There are a handful
-of rudimentary commands available, e.g., cd, ls, and mkdir. Type `help` in a
-connected telnet shell for more information. Below are a couple of commands I
-have found useful.
+There are a handful of rudimentary commands available, e.g., cd, ls, and mkdir.
+Type `help` in a connected telnet shell for more information. Below are a
+couple of commands I have found useful.
 
 
 To get a list of running processes:
