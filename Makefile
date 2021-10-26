@@ -35,8 +35,8 @@ ifndef OO_PS4_TOOLCHAIN
     $(error OO_PS4_TOOLCHAIN is undefined)
 endif
 
-CC := clang
-LD := ld.lld
+CC := clang-9
+LD := ld.lld-9
 
 UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S),Linux)
