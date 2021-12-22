@@ -269,6 +269,15 @@ kern_get_offsets(struct kern_offset *kern, unsigned int sw_ver) {
     kern->copyout = (void *)(base + K755_COPYOUT);
     break;
 
+  case 0x900:
+    base = &((unsigned char *)read_msr(0xC0000082))[-K900_XFAST_SYSCALL];
+    ptr = (unsigned char *)base;
+    kern->prison0 = (void **)&ptr[K900_PRISON_0];
+    kern->root_vnode = (void **)&ptr[K900_ROOTVNODE];
+    kern->copyin = (void *)(base + K900_COPYIN);
+    kern->copyout = (void *)(base + K900_COPYOUT);
+    break;
+    
   default:
     return -1;
   }
