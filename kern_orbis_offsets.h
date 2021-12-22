@@ -54,6 +54,7 @@ along with this program; see the file COPYING. If not, see
 #define K750_XFAST_SYSCALL         0x000001C0
 #define K751_XFAST_SYSCALL         0x000001C0
 #define K755_XFAST_SYSCALL         0x000001C0
+#define K900_XFAST_SYSCALL         0x000001C0
 
 #define K350_PRISON_0              0x00EF5A00
 #define K355_PRISON_0              0x00EF5A00
@@ -91,6 +92,7 @@ along with this program; see the file COPYING. If not, see
 #define K750_PRISON_0              0x0113B728
 #define K751_PRISON_0              0x0113B728
 #define K755_PRISON_0              0x0113B728
+#define K900_PRISON_0              0x0111F870
 
 #define K350_ROOTVNODE             0x01963000
 #define K355_ROOTVNODE             0x01963040
@@ -128,6 +130,7 @@ along with this program; see the file COPYING. If not, see
 #define K750_ROOTVNODE             0x01B463E0
 #define K751_ROOTVNODE             0x01B463E0
 #define K755_ROOTVNODE             0x01B463E0
+#define K900_ROOTVNODE             0x021EFF20
 
 #define K350_COPYIN                0x003B92A0
 #define K355_COPYIN                0x003B96E0
@@ -165,6 +168,7 @@ along with this program; see the file COPYING. If not, see
 #define K750_COPYIN                0x0028F9F0
 #define K751_COPYIN                0x0028F9F0
 #define K755_COPYIN                0x0028F9F0
+#define K900_COPYIN                0x002716A0
 
 #define K350_COPYOUT               0x003B9220
 #define K355_COPYOUT               0x003B9660
@@ -202,6 +206,7 @@ along with this program; see the file COPYING. If not, see
 #define K750_COPYOUT               0x0028F900
 #define K751_COPYOUT               0x0028F900
 #define K755_COPYOUT               0x0028F900
+#define K900_COPYOUT               0x002715B0
 
 
 
