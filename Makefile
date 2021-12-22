@@ -92,8 +92,7 @@ icon0.png:
 
 
 %.bin: %.elf
-	create-eboot -in=$<
-	mv eboot.bin $*.bin
+	create-fself -in=$< -eboot $@
 
 
 install.elf: main_install.o kern_orbis.o
@@ -117,7 +116,7 @@ daemon.elf: $(COMMANDS) main_server.o kern_orbis.o shell.o sys_orbis.o
 
 
 %.prx:
-	cp $(OO_PS4_TOOLCHAIN)/bin/data/modules/$(@F) $@
+	cp $(OO_PS4_TOOLCHAIN)/src/modules/$(@F) $@
 
 
 .INTERMEDIATE: install.sfo icon0.png daemon.sfo libc.prx libSceFios2.prx
