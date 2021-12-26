@@ -286,7 +286,6 @@ shell_loop(void) {
   char **args = NULL;
   int pipefd[2] = {0, 0};
   int exit_code = 0;
-  char **history = NULL;
   int running = 1;
   int infd = 0;
   int outfd = 1;

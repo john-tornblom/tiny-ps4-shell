@@ -29,18 +29,12 @@ along with this program; see the file COPYING. If not, see
 #include "sys.h"
 
 
-typedef struct notify_request {
-  char useless1[45];
-  char message[3075];
-} notify_request_t;
-
-
 /**
  * Generate a UI notification.
  **/
 void
 sys_notify(const char *fmt, ...) {
-  notify_request_t req;
+  OrbisNotificationRequest req;
   va_list args;
 
   bzero(&req, sizeof req);
