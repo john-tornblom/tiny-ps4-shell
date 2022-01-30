@@ -19,8 +19,8 @@ VERSION    := 1.00
 TITLE_ID   := BREW00009
 CONTENT_ID := IV0000-$(TITLE_ID)_00-TELNETSHELL00000
 
-INSTALL_LIBS := -lkernel -lc -lSceLibcInternal -lSceSysUtil
-DAEMON_LIBS  := -lkernel -lc # daemon will not start when linked to sce libs
+INSTALL_LIBS := -lkernel -lc
+DAEMON_LIBS  := -lkernel -lc
 
 PKG_FILES := daemon.bin daemon.sfo \
 	     icon0.png install.bin install.sfo \
