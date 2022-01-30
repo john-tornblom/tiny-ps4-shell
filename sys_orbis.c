@@ -95,6 +95,78 @@ static void on_SIGSTOP(int sig) {
 }
 
 
+#define MAX_MESSAGE_SIZE    0x2000
+#define MAX_STACK_FRAMES    32
+
+
+/**
+ * A callframe captures the stack and program pointer of a
+ * frame in the call path.
+ **/
+typedef struct  {
+  void *sp;
+  void *pc;
+} callframe_t;
+
+
+/**
+ * Log a backtrace to /dev/klog
+ **/
+static void
+klog_backtrace(const char* reason) {
+  char addr2line[MAX_STACK_FRAMES * 20];
+  callframe_t frames[MAX_STACK_FRAMES];
+  OrbisKernelVirtualQueryInfo info;
+  char buf[MAX_MESSAGE_SIZE + 3];
+  unsigned int nb_frames = 0;
+  char temp[80];
+
+  memset(addr2line, 0, sizeof addr2line);
+  memset(frames, 0, sizeof frames);
+  memset(buf, 0, sizeof buf);
+
+  snprintf(buf, sizeof buf, "<118>[Crashlog]: %s\n", reason);
+  
+  strncat(buf, "<118>[Crashlog]: Backtrace:\n", MAX_MESSAGE_SIZE);
+  sceKernelBacktraceSelf(frames, sizeof frames, &nb_frames, 0);
+  for(unsigned int i=0; i<nb_frames; i++) {
+    memset(&info, 0, sizeof info);
+    sceKernelVirtualQuery(frames[i].pc, 0, &info, sizeof info);
+
+    snprintf(temp, sizeof temp,
+	     "<118>[Crashlog]:   #%02d %32s: 0x%lx\n",
+	     i + 1, info.name, frames[i].pc - info.unk01 - 1);
+    strncat(buf, temp, MAX_MESSAGE_SIZE);
+    
+    snprintf(temp, sizeof temp,
+	     "0x%lx ", frames[i].pc - info.unk01 - 1);
+    strncat(addr2line, temp, sizeof addr2line - 1);
+  }
+
+  strncat(buf, "<118>[Crashlog]: addr2line: ", MAX_MESSAGE_SIZE);
+  strncat(buf, addr2line, MAX_MESSAGE_SIZE);
+  strncat(buf, "\n", MAX_MESSAGE_SIZE);
+
+  buf[MAX_MESSAGE_SIZE+1] = '\n';
+  buf[MAX_MESSAGE_SIZE+2] = '\0';
+  
+  sceKernelDebugOutText(0, buf);
+}
+
+
+/**
+ * Log fatal signals to kernel log.
+ **/
+static void
+on_fatal_signal(int sig) {
+  char reason[64];
+
+  sprintf(reason, "Received the fatal POSIX signal %d", sig);
+  klog_backtrace(reason);
+  _exit(1);
+}
+
+
 /**
  * Create a new session so we are not attached to PS4 system services.
  * This ensures kill -1 does not terminate vital services when acting as uid 0.
@@ -111,6 +183,12 @@ sys_init(void) {
 
   setsid();
   pgid = getpgrp();
+
+  signal(5, on_fatal_signal);  // SIGTRAP
+  signal(6, on_fatal_signal);  // SIGABRT
+  signal(8, on_fatal_signal);  // SIGFPE
+  signal(10, on_fatal_signal); // SIGBUS
+  signal(11, on_fatal_signal); // SIGSEGV
   signal(17, on_SIGSTOP);
 }
 
