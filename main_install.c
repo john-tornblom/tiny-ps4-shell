@@ -60,7 +60,7 @@ static char*
 orbis_getcwd(char *buf, size_t size) {
 #define SYS_getcwd 326
 
-  if(syscall(SYS_getcwd, buf, size)) {
+  if(orbis_syscall(SYS_getcwd, buf, size)) {
     return NULL;
   }
   return buf;
@@ -110,7 +110,7 @@ mount_system() {
 #define SYS_nmount 378
 #define MNT_UPDATE 0x0000000000010000ULL
   
-  return syscall(SYS_nmount, iov, iovlen, MNT_UPDATE);
+  return orbis_syscall(SYS_nmount, iov, iovlen, MNT_UPDATE);
 }
 
 

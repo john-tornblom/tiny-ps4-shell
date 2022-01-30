@@ -54,7 +54,7 @@ char*
 sys_getcwd(char *buf, size_t size) {
 #define SYS_getcwd 326
   
-  if(syscall(SYS_getcwd, buf, size)) {
+  if(orbis_syscall(SYS_getcwd, buf, size)) {
     return NULL;
   }
   return buf;

@@ -19,6 +19,7 @@ along with this program; see the file COPYING. If not, see
 
 
 #include <errno.h>
+#include <stdarg.h>
 #include <stdint.h>
 #include <string.h>
 #include <limits.h>
@@ -33,6 +34,50 @@ along with this program; see the file COPYING. If not, see
 
 
 #define SYS_kexec 11
+
+
+static long
+__syscall6(long n, long a1, long a2, long a3, long a4, long a5, long a6) {
+  unsigned long ret;
+  char iserror;
+  
+  register long r10 __asm__("r10") = a4;
+  register long r8 __asm__("r8") = a5;
+  register long r9 __asm__("r9") = a6;
+  
+  __asm__ __volatile__(
+     "syscall" : "=a"(ret), "=@ccc"(iserror), "+r"(r10), "+r"(r8), "+r"(r9) :
+     "a"(n), "D"(a1), "S"(a2), "d"(a3) :
+     "rcx", "r11", "memory"
+     );
+
+  return iserror ? -ret : ret;
+}
+
+
+long
+orbis_syscall(long sysno, ...) {
+  int  err;
+  va_list args;
+  long arg0, arg1, arg2, arg3, arg4, arg5;
+  
+  va_start(args, sysno);
+  arg0 = va_arg(args, long);
+  arg1 = va_arg(args, long);
+  arg2 = va_arg(args, long);
+  arg3 = va_arg(args, long);
+  arg4 = va_arg(args, long);
+  arg5 = va_arg(args, long);
+  va_end(args);
+  
+  err = __syscall6(sysno, arg0, arg1, arg2, arg3, arg4, arg5);
+  if(err < 0) {
+    errno = -err;
+    return -1;
+  }
+
+  return err;
+}
 
 
 static inline __attribute__((always_inline))
@@ -431,7 +476,7 @@ app_get(void *fn, void *ptr, size_t len) {
   void *uaddr = mmap(0, len, prot, flags, -1, 0);
   unsigned int sw_ver = libc_sw_version();
   
-  if(!syscall(SYS_kexec, fn, sw_ver, uaddr)) {
+  if(!orbis_syscall(SYS_kexec, fn, sw_ver, uaddr)) {
     memcpy(ptr, uaddr, len);
     rc = 0;
   }
@@ -451,7 +496,7 @@ app_set(void *fn, void *ptr, size_t len) {
   unsigned int sw_ver = libc_sw_version();
   
   memcpy(uaddr, ptr, len);
-  if(!syscall(SYS_kexec, fn, sw_ver, uaddr)) {
+  if(!orbis_syscall(SYS_kexec, fn, sw_ver, uaddr)) {
     rc = 0;
   }
 
@@ -524,7 +569,7 @@ app_set_capabilities(uint64_t val) {
 int
 app_jailbreak(void) {
   unsigned int sw_ver = libc_sw_version();
-  if(syscall(SYS_kexec, kexec_jailbreak, sw_ver)) {
+  if(orbis_syscall(SYS_kexec, kexec_jailbreak, sw_ver)) {
     return -1;
   }
 

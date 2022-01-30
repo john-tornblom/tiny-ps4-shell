@@ -28,4 +28,4 @@ int app_set_capabilities(uint64_t cas);
 
 int app_jailbreak(void);
 
-int app_enable_mmap_self(void);
+long orbis_syscall(long sysno, ...);
