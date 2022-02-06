@@ -132,5 +132,8 @@ kill_daemon:
 
 
 deploy: daemon.bin kill_daemon
-	curl -T daemon.bin ftp://$(PS4_HOST):1337/system/vsh/app/$(TITLE_ID)/eboot.bin
+	-netcat -q 1 $(PS4_HOST) 2121 < \
+		scripts/goldhen-remount-system.nc 
+	curl -m 5 --connect-timeout 5 -T daemon.bin \
+		ftp://$(PS4_HOST):2121/system/vsh/app/$(TITLE_ID)/eboot.bin
 
