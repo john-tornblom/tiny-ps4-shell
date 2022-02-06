@@ -216,7 +216,7 @@ shell_prompt(void) {
  **/
 static int
 shell_fork(main_t *main, int argc, char **argv) {
-  pid_t pid = fork();  
+  pid_t pid = sys_fork();
   if (pid == 0) {
     sys_setprocname(argv[0]);
     int rc = main(argc, argv);

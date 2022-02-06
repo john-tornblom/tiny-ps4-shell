@@ -74,7 +74,7 @@ client_init(int fd) {
  **/
 static void
 client_fork(int master, int slave) {
-  pid_t pid = fork();
+  pid_t pid = sys_fork();
   
   if (pid == 0) {
     close(master);

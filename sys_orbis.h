@@ -20,6 +20,7 @@ along with this program; see the file COPYING. If not, see
 #include <stdint.h>
 
 void sys_init(void);
+pid_t sys_fork(void);
 char* sys_getcwd(char *buf, size_t size);
 void sys_notify(const char *fmt, ...);
 void sys_setprocname(const char* name);

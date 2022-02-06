@@ -61,6 +61,18 @@ sys_getcwd(char *buf, size_t size) {
 }
 
 
+
+/**
+ * The PS4 port of musl does not use the SYS_fork syscall
+ * correctly, accommodate for that here.
+ **/
+pid_t
+sys_fork(void) {
+#define SYS_fork 2
+  return orbis_syscall(SYS_fork);
+}
+
+
 void
 sys_setprocname(const char* name) {
   sceKernelSetProcessName(name);
