@@ -33,4 +33,4 @@ jobs:
     - name: Upload Artifact
       uses: actions/upload-artifact@v2
       with:
-        path: /home/runner/work/tiny-ps4-shell/tiny-ps4-shell/
+        path: /home/runner/work/tiny-ps4-shell/tiny-ps4-shell/*.pkg
