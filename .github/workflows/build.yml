@@ -29,3 +29,6 @@ jobs:
       run: |
         export OO_PS4_TOOLCHAIN=/home/runner/work/tiny-ps4-shell/OpenOrbis/PS4Toolchain/
         make
+
+    - name: Upload Artifact
+    - uses: actions/upload-artifact@v2
