@@ -20,7 +20,7 @@ jobs:
       run: |
         cd ..
         sudo apt update
-        sudo apt install clang-10 lld
+        sudo apt install clang-10 lld gsfonts
         wget https://github.com/OpenOrbis/OpenOrbis-PS4-Toolchain/releases/download/v0.5.2/v0.5.2.tar.gz
         tar -xf v0.5.2.tar.gz
         rm v0.5.2.tar.gz
