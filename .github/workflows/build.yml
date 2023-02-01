@@ -24,7 +24,8 @@ jobs:
         wget https://github.com/OpenOrbis/OpenOrbis-PS4-Toolchain/releases/download/v0.5.2/v0.5.2.tar.gz
         tar -xf v0.5.2.tar.gz
         rm v0.5.2.tar.gz
-        export OO_PS4_TOOLCHAIN=/home/runner/work/tiny-ps4-shell/OpenOrbis/PS4Toolchain/
 
     - name: Run make
-      run: make
+      run: |
+        export OO_PS4_TOOLCHAIN=/home/runner/work/tiny-ps4-shell/OpenOrbis/PS4Toolchain/
+        make
