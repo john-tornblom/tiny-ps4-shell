@@ -1,0 +1,53 @@
+name: Build PKG
+
+on: push
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: recursive
+
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Restore cached Orbis SDK
+      id: cache-orbis
+      uses: actions/cache/restore@v3
+      with:
+        path: OpenOrbis
+        key: orbis
+
+    - name: Install dependencies
+      run: |
+        sudo apt update
+        sudo apt install clang-10 lld gsfonts
+        
+    - name: Download Orbis SDK
+      if: ${{ !steps.cache-orbis.outputs.cache-hit }}
+      run: |
+        wget https://github.com/OpenOrbis/OpenOrbis-PS4-Toolchain/releases/download/v0.5.2/v0.5.2.tar.gz
+        tar -xf v0.5.2.tar.gz
+        rm v0.5.2.tar.gz
+
+    - name: Cache Orbis SDK
+      if: ${{ !steps.cache-orbis.outputs.cache-hit }}
+      uses: actions/cache/save@v3
+      with:
+        path: OpenOrbis
+        key: orbis
+
+    - name: Run make
+      run: |
+        export OO_PS4_TOOLCHAIN=${{ github.workspace }}/OpenOrbis/PS4Toolchain/
+        make
+
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        path: /home/runner/work/tiny-ps4-shell/tiny-ps4-shell/*.pkg
