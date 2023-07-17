@@ -31,7 +31,6 @@ jobs:
     - name: Download Orbis SDK
       if: ${{ !steps.cache-orbis.outputs.cache-hit }}
       run: |
-        cd ..
         wget https://github.com/OpenOrbis/OpenOrbis-PS4-Toolchain/releases/download/v0.5.2/v0.5.2.tar.gz
         tar -xf v0.5.2.tar.gz
         rm v0.5.2.tar.gz
@@ -45,7 +44,7 @@ jobs:
 
     - name: Run make
       run: |
-        export OO_PS4_TOOLCHAIN=/home/runner/work/tiny-ps4-shell/OpenOrbis/PS4Toolchain/
+        export OO_PS4_TOOLCHAIN=${{ github.workspace }}/OpenOrbis/PS4Toolchain/
         make
 
     - name: Upload Artifact
