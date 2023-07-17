@@ -25,13 +25,13 @@ jobs:
 
     - name: Install dependencies
       run: |
-        cd ..
         sudo apt update
         sudo apt install clang-10 lld gsfonts
         
     - name: Download Orbis SDK
       if: ${{ !steps.cache-orbis.outputs.cache-hit }}
       run: |
+        cd ..
         wget https://github.com/OpenOrbis/OpenOrbis-PS4-Toolchain/releases/download/v0.5.2/v0.5.2.tar.gz
         tar -xf v0.5.2.tar.gz
         rm v0.5.2.tar.gz
